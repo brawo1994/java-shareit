@@ -12,7 +12,7 @@ import java.util.Map;
 public class ErrorHandler {
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.CONFLICT)
     public Map<String, String> handlerValidationException(final ValidationException e) {
         return Map.of("Validation error", e.getMessage());
     }
