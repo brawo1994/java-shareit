@@ -5,7 +5,9 @@ import ru.practicum.shareit.item.model.Item;
 
 public class ItemMapper {
 
-    private ItemMapper() { throw new IllegalStateException("Utility class"); }
+    private ItemMapper() {
+        throw new IllegalStateException("Utility class");
+    }
 
     public static Item toModel(ItemDto itemDto) {
         return Item.builder()

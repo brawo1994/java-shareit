@@ -5,7 +5,9 @@ import ru.practicum.shareit.user.model.User;
 
 public class UserMapper {
 
-    private UserMapper() { throw new IllegalStateException("Utility class"); }
+    private UserMapper() {
+        throw new IllegalStateException("Utility class");
+    }
 
     public static User toModel(UserDto userDto) {
         return User.builder()

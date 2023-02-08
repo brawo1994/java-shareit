@@ -63,6 +63,7 @@ public class UserService {
             }
         }
     }
+
     private User createUserToUpdate(long userId, UserDto userDto) {
         User userToUpdate = UserMapper.toModel(userDto);
         User oldUser = userRepository.findItemById(userId);
