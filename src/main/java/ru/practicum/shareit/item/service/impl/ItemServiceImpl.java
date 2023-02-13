@@ -83,7 +83,7 @@ public class ItemServiceImpl implements ItemService {
         List<ItemDto> items = itemRepository.findItemsByOwnerId(userId).stream()
                 .map(ItemMapper::toDto)
                 .collect(Collectors.toList());
-        for (ItemDto itemDto : items){
+        for (ItemDto itemDto : items) {
             addBookingToItemDto(itemDto);
             addCommentsToItemDto(itemDto);
         }
@@ -119,6 +119,7 @@ public class ItemServiceImpl implements ItemService {
         comment.setCreated(LocalDateTime.now());
         return CommentMapper.toDto(commentRepository.save(comment));
     }
+
     private Item createItemToUpdate(long id, ItemDto itemDto) {
         Item itemToUpdate = ItemMapper.toModel(itemDto);
         Item oldItem = getItemIfExistOrThrow(id);
