@@ -1,12 +1,16 @@
 package ru.practicum.shareit.item.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.service.ItemService;
+import ru.practicum.shareit.util.Pagination;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @RestController
@@ -42,13 +46,17 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<ItemDto> getItemsByUserId(@RequestHeader(SHARER_USER_ID_HEADER) long userId) {
-        return itemService.getItemsByUserId(userId);
+    public List<ItemDto> getItemsByUserId(@RequestHeader(SHARER_USER_ID_HEADER) long userId,
+                                          @PositiveOrZero @RequestParam(defaultValue = "0", required = false) Integer from,
+                                          @Positive @RequestParam(defaultValue = "10", required = false) Integer size) {
+        return itemService.getItemsByUserId(userId, new Pagination(from, size, Sort.unsorted()));
     }
 
     @GetMapping("/search")
-    public List<ItemDto> searchItems(@RequestParam String text) {
-        return itemService.searchItemsByText(text);
+    public List<ItemDto> searchItems(@RequestParam String text,
+                                     @PositiveOrZero @RequestParam(defaultValue = "0", required = false) Integer from,
+                                     @Positive @RequestParam(defaultValue = "10", required = false) Integer size) {
+        return itemService.searchItemsByText(text, new Pagination(from, size, Sort.unsorted()));
     }
 
     @PostMapping("/{itemId}/comment")

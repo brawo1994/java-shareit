@@ -22,6 +22,8 @@ public class ItemDto {
     @Size(max = 1024, message = "Значение в поле description не может быть длиннее 1024 символов")
     private String description;
 
+    private Long requestId;
+
     @NotNull(message = "Поле available не может отсутствовать")
     private Boolean available;
 

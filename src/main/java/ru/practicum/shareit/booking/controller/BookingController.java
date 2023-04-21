@@ -1,11 +1,15 @@
 package ru.practicum.shareit.booking.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.service.BookingService;
+import ru.practicum.shareit.util.Pagination;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @RestController
@@ -36,13 +40,17 @@ public class BookingController {
 
     @GetMapping
     public List<BookingDto> getBookingsByBookerId(@RequestHeader(SHARER_USER_ID_HEADER) long userId,
-                                                  @RequestParam(defaultValue = "ALL", required = false) String state) {
-        return bookingService.getBookingsByBookerId(userId, state);
+                                                  @RequestParam(defaultValue = "ALL", required = false) String state,
+                                                  @PositiveOrZero @RequestParam(defaultValue = "0", required = false) Integer from,
+                                                  @Positive @RequestParam(defaultValue = "10", required = false) Integer size) {
+        return bookingService.getBookingsByBookerId(userId, state, new Pagination(from, size, Sort.unsorted()));
     }
 
     @GetMapping("/owner")
     public List<BookingDto> getBookingsByItemsOwnerId(@RequestHeader(SHARER_USER_ID_HEADER) long userId,
-                                                      @RequestParam(defaultValue = "ALL", required = false) String state) {
-        return bookingService.getBookingsByItemsOwnerId(userId, state);
+                                                      @RequestParam(defaultValue = "ALL", required = false) String state,
+                                                      @PositiveOrZero @RequestParam(defaultValue = "0", required = false) Integer from,
+                                                      @Positive @RequestParam(defaultValue = "10", required = false) Integer size) {
+        return bookingService.getBookingsByItemsOwnerId(userId, state, new Pagination(from, size, Sort.unsorted()));
     }
 }
