@@ -21,10 +21,12 @@ public class BookingDto {
 
     @FutureOrPresent
     @JsonFormat
+    @NotNull
     private LocalDateTime start;
 
     @Future
     @JsonFormat
+    @NotNull
     private LocalDateTime end;
 
     @NotNull

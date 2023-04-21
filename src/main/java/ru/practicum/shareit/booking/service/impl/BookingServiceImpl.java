@@ -46,6 +46,9 @@ public class BookingServiceImpl implements BookingService {
         if (bookingDto.getEnd().isBefore(bookingDto.getStart())) {
             throw new BadRequestException("Дата окончания бронирования не может быть раньше даты начала бронирования");
         }
+        if (bookingDto.getEnd().equals(bookingDto.getStart())) {
+            throw new BadRequestException("Дата окончания бронирования не может совпадать с датой начала бронирования");
+        }
         bookingDto.setStatus(BookingStatus.WAITING);
         bookingDto.setBooker(user);
         bookingDto.setItem(item);

@@ -134,6 +134,21 @@ class BookingServiceImplTest {
         assertEquals("Дата окончания бронирования не может быть раньше даты начала бронирования", exception.getMessage());
     }
 
+    @Test
+    void createBookingIfStartAndEndMatchTest() {
+        booking.setStart(LocalDateTime.now());
+        booking.setEnd(booking.getStart());
+        when(itemService.getItemIfExistOrThrow(anyLong())).thenReturn(item);
+        when(userService.getUserIfExistOrThrow(anyLong())).thenReturn(user);
+
+        BadRequestException exception = assertThrows(
+                BadRequestException.class,
+                () -> bookingService.createBooking(2L, BookingMapper.toDto(booking))
+        );
+
+        assertEquals("Дата окончания бронирования не может совпадать с датой начала бронирования", exception.getMessage());
+    }
+
 
     @Test
     void approvedBookingApproveTest() {
