@@ -31,6 +31,7 @@ public class RequestServiceImpl implements RequestService {
     private final UserService userService;
     private final RequestRepository requestRepository;
     private final ItemRepository itemRepository;
+
     @Override
     @Transactional
     public RequestDto createRequest(long userId, RequestDto requestDto) {
