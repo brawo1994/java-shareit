@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Builder
 public class CommentDto {
 
-    private Long id;
+    private long id;
 
     @NotEmpty(message = "Поле text не может отсутствовать или быть пустым")
     @Size(max = 1024, message = "Значение в поле text не может быть длиннее 1024 символов")
