@@ -7,6 +7,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.test.util.AssertionErrors;
 import ru.practicum.shareit.request.model.Request;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.util.Pagination;
@@ -29,32 +30,30 @@ class RequestRepositoryTest {
     private final Pageable pageable = new Pagination(0, 10, Sort.unsorted());
 
     private final User user = User.builder()
-            //.id(1L)
             .name("Ivan")
             .email("ivan@ya.ru")
             .build();
 
     private final Request request = Request.builder()
-            //.id(1L)
             .description("Description")
             .owner(user)
             .created(LocalDateTime.now())
             .build();
 
     @Test
-    void contextLoadsTest() {
+    void testContextLoads() {
         assertNotNull(entityManager);
     }
 
     @Test
-    void findAllByPageableTest() {
+    void testFindAllByPageable() {
         entityManager.persist(user);
         entityManager.persist(request);
 
         List<Request> requestList = requestRepository
                 .findAllWhereOwnerNotCurrentUserByPageable(99999, pageable);
 
-        assertEquals(requestList.size(), 1);
+        AssertionErrors.assertEquals("There should have been 1 Request in the list", 1, requestList.size());
         assertEquals(List.of(request), requestList);
     }
 }

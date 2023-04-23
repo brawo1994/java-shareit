@@ -52,7 +52,7 @@ class BookingDtoTest {
     }
 
     @Test
-    void bookingDtoTest() throws Exception {
+    void testBookingDto() throws Exception {
         JsonContent<BookingDto> result = json.write(bookingDto);
 
         assertThat(result).extractingJsonPathNumberValue("$.id").isEqualTo((int)bookingDto.getId());

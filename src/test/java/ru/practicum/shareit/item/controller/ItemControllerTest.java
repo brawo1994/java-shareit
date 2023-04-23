@@ -23,9 +23,13 @@ import ru.practicum.shareit.user.model.User;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -76,7 +80,7 @@ class ItemControllerTest {
     }
 
     @Test
-    void createItemTest() throws Exception {
+    void testCreateItem() throws Exception {
         when(itemService.createItem(anyLong(), any(ItemDto.class)))
                 .thenReturn(itemDto);
 
@@ -89,7 +93,7 @@ class ItemControllerTest {
     }
 
     @Test
-    void updateItemTest() throws Exception {
+    void testUpdateItem() throws Exception {
         when(itemService.updateItem(anyLong(), anyLong(), any(ItemDto.class)))
                 .thenReturn(itemDto);
 
@@ -102,14 +106,14 @@ class ItemControllerTest {
     }
 
     @Test
-    void deleteItemTest() throws Exception {
+    void testDeleteItem() throws Exception {
         mockMvc.perform(delete("/items/1")
                         .header(SHARER_USER_ID_HEADER, user.getId()))
                 .andExpect(status().isOk());
     }
 
     @Test
-    void getItemTest() throws Exception {
+    void testGetItem() throws Exception {
         when(itemService.getItemById(anyLong(), anyLong()))
                 .thenReturn(itemDto);
 
@@ -120,7 +124,7 @@ class ItemControllerTest {
     }
 
     @Test
-    void getItemsByUserIdTest() throws Exception {
+    void testGetItemsByUserId() throws Exception {
         when(itemService.getItemsByUserId(anyLong(), any(Pageable.class)))
                 .thenReturn(List.of(itemDto));
 
@@ -131,7 +135,7 @@ class ItemControllerTest {
     }
 
     @Test
-    void searchItemsTest() throws Exception {
+    void testSearchItems() throws Exception {
         when(itemService.searchItemsByText(anyString(), any(Pageable.class)))
                 .thenReturn(List.of(itemDto));
 
@@ -142,7 +146,7 @@ class ItemControllerTest {
     }
 
     @Test
-    void createCommentTest() throws Exception {
+    void testCreateComment() throws Exception {
         when(itemService.createComment(anyLong(), anyLong(), any(CommentDto.class)))
                 .thenReturn(commentDto);
 

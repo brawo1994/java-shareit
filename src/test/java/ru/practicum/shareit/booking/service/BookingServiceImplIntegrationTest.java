@@ -28,7 +28,7 @@ class BookingServiceImplIntegrationTest {
     private final ItemService itemService;
 
     @Test
-    void approvedBookingTest() {
+    void testApprovedBooking() {
 
         UserDto ownerDto = UserDto.builder()
                 .name("Ivan")

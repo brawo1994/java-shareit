@@ -17,7 +17,10 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -45,7 +48,7 @@ class UserControllerTest {
     }
 
     @Test
-    void createUserTest() throws Exception {
+    void testCreateUser() throws Exception {
         when(userService.createUser(any(UserDto.class)))
                 .thenReturn(userDto);
 
@@ -57,7 +60,7 @@ class UserControllerTest {
     }
 
     @Test
-    void updateUserTest() throws Exception {
+    void testUpdateUser() throws Exception {
         when(userService.updateUser(anyLong(), any(UserDto.class)))
                 .thenReturn(userDto);
 
@@ -69,13 +72,13 @@ class UserControllerTest {
     }
 
     @Test
-    void deleteUserTest() throws Exception {
+    void testDeleteUser() throws Exception {
         mockMvc.perform(delete("/users/1"))
                 .andExpect(status().isOk());
     }
 
     @Test
-    void getUsersTest() throws Exception {
+    void testGetUsers() throws Exception {
         when(userService.getAllUsers())
                 .thenReturn(List.of(userDto));
 
@@ -85,7 +88,7 @@ class UserControllerTest {
     }
 
     @Test
-    void getUserByIdTest() throws Exception {
+    void testGetUserById() throws Exception {
         when(userService.getUserById(anyLong()))
                 .thenReturn(userDto);
 

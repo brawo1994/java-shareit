@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.test.util.AssertionErrors;
 import ru.practicum.shareit.exeption.NotFoundException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
@@ -76,7 +77,7 @@ class RequestServiceImplTest {
     }
 
     @Test
-    void createRequestTest() {
+    void testCreateRequest() {
         when(userService.getUserIfExistOrThrow(anyLong())).thenReturn(user);
         when(requestRepository.save(any(Request.class))).thenReturn(request);
         RequestDto requestDto = requestService.createRequest(user.getId(), RequestMapper.toDto(request));
@@ -85,7 +86,7 @@ class RequestServiceImplTest {
     }
 
     @Test
-    void getRequestListByOwnerIdTest() {
+    void testGetRequestListByOwnerId() {
         when(userService.getUserIfExistOrThrow(anyLong())).thenReturn(user);
         when(requestRepository.findAllByOwnerId(anyLong())).thenReturn(List.of(request));
         when(itemRepository.findAllByRequestOwnerId(anyLong())).thenReturn(List.of(item));
@@ -96,21 +97,21 @@ class RequestServiceImplTest {
     }
 
     @Test
-    void getAllRequestListTest() {
+    void testGetAllRequestList() {
         when(userService.getUserIfExistOrThrow(anyLong())).thenReturn(user);
         when(requestRepository.findAllWhereOwnerNotCurrentUserByPageable(anyLong(), any(Pageable.class)))
                 .thenReturn(List.of(request));
         when(itemRepository.findAllByRequestIds(anyList())).thenReturn(List.of(item));
         List<RequestDto> requestDtoList = requestService.getAllRequestList(user.getId(), new Pagination(0, 10, Sort.unsorted()));
 
-        assertEquals(1, requestDtoList.size());
+        AssertionErrors.assertEquals("There should have been 1 Request in the list", 1, requestDtoList.size());
         assertEquals(request.getId(), requestDtoList.get(0).getId());
         assertEquals(item.getId(), requestDtoList.get(0).getItems().get(0).getId());
     }
 
 
     @Test
-    void getRequestByIdTest() {
+    void testGetRequestById() {
         when(userService.getUserIfExistOrThrow(anyLong())).thenReturn(user);
         when(itemRepository.findAllByRequestId(anyLong())).thenReturn(List.of(item));
         when(requestRepository.findById(anyLong())).thenReturn(Optional.ofNullable(request));
@@ -121,7 +122,7 @@ class RequestServiceImplTest {
     }
 
     @Test
-    void getRequestByIdWithoutRequestTest() {
+    void testGetRequestByIdWithoutRequest() {
         when(userService.getUserIfExistOrThrow(anyLong())).thenReturn(user);
         when(requestRepository.findById(anyLong())).thenReturn(Optional.empty());
 

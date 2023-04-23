@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.test.util.AssertionErrors;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
@@ -83,7 +84,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void createBookingTest() {
+    void testCreateBooking() {
         when(itemService.getItemIfExistOrThrow(anyLong())).thenReturn(item);
         when(userService.getUserIfExistOrThrow(anyLong())).thenReturn(user);
         when(bookingRepository.save(any(Booking.class))).thenReturn(booking);
@@ -93,7 +94,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void createBookingIfOwnerTest() {
+    void testCreateBookingIfOwner() {
         when(itemService.getItemIfExistOrThrow(anyLong())).thenReturn(item);
         when(userService.getUserIfExistOrThrow(anyLong())).thenReturn(user);
 
@@ -106,7 +107,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void createBookingIfNotAvailableTest() {
+    void testCreateBookingIfNotAvailable() {
         item.setAvailable(false);
         when(itemService.getItemIfExistOrThrow(anyLong())).thenReturn(item);
         when(userService.getUserIfExistOrThrow(anyLong())).thenReturn(user);
@@ -120,7 +121,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void createBookingIfNotCorrectStartAndEndTest() {
+    void testCreateBookingIfNotCorrectStartAndEnd() {
         booking.setStart(LocalDateTime.now().plusHours(1));
         booking.setEnd(LocalDateTime.now().minusHours(1));
         when(itemService.getItemIfExistOrThrow(anyLong())).thenReturn(item);
@@ -135,7 +136,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void createBookingIfStartAndEndMatchTest() {
+    void testCreateBookingIfStartAndEndMatch() {
         booking.setStart(LocalDateTime.now());
         booking.setEnd(booking.getStart());
         when(itemService.getItemIfExistOrThrow(anyLong())).thenReturn(item);
@@ -151,7 +152,7 @@ class BookingServiceImplTest {
 
 
     @Test
-    void approvedBookingApproveTest() {
+    void testApprovedBookingApprove() {
         when(bookingRepository.findById(anyLong())).thenReturn(Optional.ofNullable(booking));
         when(bookingRepository.save(any(Booking.class))).thenReturn(booking);
         BookingDto bookingDto = bookingService.approvedBooking(user.getId(), booking.getId(), true);
@@ -160,7 +161,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void approvedBookingRejectTest() {
+    void testApprovedBookingReject() {
         when(bookingRepository.findById(anyLong())).thenReturn(Optional.ofNullable(booking));
         when(bookingRepository.save(any(Booking.class))).thenReturn(booking);
         BookingDto bookingDto = bookingService.approvedBooking(user.getId(), booking.getId(), false);
@@ -169,7 +170,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void approvedBookingNotFoundTest() {
+    void testApprovedBookingNotFound() {
         when(bookingRepository.findById(anyLong())).thenReturn(Optional.ofNullable(booking));
 
         NotFoundException exception = assertThrows(
@@ -181,7 +182,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void approvedBookingAlreadyApproveTest() {
+    void testApprovedBookingAlreadyApprove() {
         booking.setStatus(BookingStatus.APPROVED);
         when(bookingRepository.findById(anyLong())).thenReturn(Optional.ofNullable(booking));
 
@@ -194,7 +195,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void getBookingByIdTest() {
+    void testGetBookingById() {
         when(bookingRepository.findById(anyLong())).thenReturn(Optional.ofNullable(booking));
         BookingDto bookingDto = bookingService.getBookingById(user.getId(), booking.getId());
 
@@ -202,7 +203,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void getBookingByIdNotFoundTest() {
+    void testGetBookingByIdNotFound() {
         when(bookingRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         NotFoundException exception = assertThrows(
@@ -214,7 +215,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void getBookingByIdNotOwnerTest() {
+    void testGetBookingByIdNotOwner() {
         when(bookingRepository.findById(anyLong())).thenReturn(Optional.ofNullable(booking));
 
         NotFoundException exception = assertThrows(
@@ -226,73 +227,73 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void getBookingsByBookerIdAllTest() {
+    void testGetBookingsByBookerIdAll() {
         when(userService.getUserIfExistOrThrow(anyLong())).thenReturn(user);
         when(bookingRepository.findAllByBookerIdOrderByStartDesc(anyLong(),any(Pageable.class)))
                 .thenReturn(List.of(booking));
         List<BookingDto> bookingDtoList = bookingService.getBookingsByBookerId(user.getId(), "ALL", pagination);
 
-        assertEquals(1, bookingDtoList.size());
+        AssertionErrors.assertEquals("There should have been 1 Booking in the list", 1, bookingDtoList.size());
         assertEquals(booking.getId(), bookingDtoList.get(0).getId());
     }
 
     @Test
-    void getBookingsByBookerIdCurrentTest() {
+    void testGetBookingsByBookerIdCurrent() {
         when(userService.getUserIfExistOrThrow(anyLong())).thenReturn(user);
         when(bookingRepository.findByBookerIdCurrent(anyLong(), any(), any(Pageable.class)))
                 .thenReturn(List.of(booking));
         List<BookingDto> bookingDtoList = bookingService.getBookingsByBookerId(user.getId(), "CURRENT", pagination);
 
-        assertEquals(1, bookingDtoList.size());
+        AssertionErrors.assertEquals("There should have been 1 Booking in the list", 1, bookingDtoList.size());
         assertEquals(booking.getId(), bookingDtoList.get(0).getId());
     }
 
     @Test
-    void getBookingsByBookerIdPastTest() {
+    void testGetBookingsByBookerIdPast() {
         when(userService.getUserIfExistOrThrow(anyLong())).thenReturn(user);
         when(bookingRepository.findByBookerIdPast(anyLong(), any(), any(Pageable.class)))
                 .thenReturn(List.of(booking));
         List<BookingDto> bookingDtoList = bookingService.getBookingsByBookerId(user.getId(), "PAST", pagination);
 
-        assertEquals(1, bookingDtoList.size());
+        AssertionErrors.assertEquals("There should have been 1 Booking in the list", 1, bookingDtoList.size());
         assertEquals(booking.getId(), bookingDtoList.get(0).getId());
     }
 
     @Test
-    void getBookingsByBookerIdFutureTest() {
+    void testGetBookingsByBookerIdFuture() {
         when(userService.getUserIfExistOrThrow(anyLong())).thenReturn(user);
         when(bookingRepository.findByBookerIdFuture(anyLong(), any(), any(Pageable.class)))
                 .thenReturn(List.of(booking));
         List<BookingDto> bookingDtoList = bookingService.getBookingsByBookerId(user.getId(), "FUTURE", pagination);
 
-        assertEquals(1, bookingDtoList.size());
+        AssertionErrors.assertEquals("There should have been 1 Booking in the list", 1, bookingDtoList.size());
         assertEquals(booking.getId(), bookingDtoList.get(0).getId());
     }
 
     @Test
-    void getBookingsByBookerIdWaitingTest() {
+    void testGetBookingsByBookerIdWaiting() {
         when(userService.getUserIfExistOrThrow(anyLong())).thenReturn(user);
         when(bookingRepository.findByBookerIdAndStatus(anyLong(), any(), any(Pageable.class)))
                 .thenReturn(List.of(booking));
         List<BookingDto> bookingDtoList = bookingService.getBookingsByBookerId(user.getId(), "WAITING", pagination);
 
-        assertEquals(1, bookingDtoList.size());
+        AssertionErrors.assertEquals("There should have been 1 Booking in the list", 1, bookingDtoList.size());
         assertEquals(booking.getId(), bookingDtoList.get(0).getId());
     }
 
     @Test
-    void getBookingsByBookerIdRejectedTest() {
+    void testGetBookingsByBookerIdRejected() {
         when(userService.getUserIfExistOrThrow(anyLong())).thenReturn(user);
         when(bookingRepository.findByBookerIdAndStatus(anyLong(), any(), any(Pageable.class)))
                 .thenReturn(List.of(booking));
         List<BookingDto> bookingDtoList = bookingService.getBookingsByBookerId(user.getId(), "REJECTED", pagination);
 
-        assertEquals(1, bookingDtoList.size());
+        AssertionErrors.assertEquals("There should have been 1 Booking in the list", 1, bookingDtoList.size());
         assertEquals(booking.getId(), bookingDtoList.get(0).getId());
     }
 
     @Test
-    void getBookingsByBookerIdUnsupportedStatusTest() {
+    void testGetBookingsByBookerIdUnsupportedStatus() {
         when(userService.getUserIfExistOrThrow(anyLong())).thenReturn(user);
 
         UnsupportedStatusException exception = assertThrows(
@@ -304,73 +305,73 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void getBookingsByItemsOwnerIdAllTest() {
+    void testGetBookingsByItemsOwnerIdAll() {
         when(userService.getUserIfExistOrThrow(anyLong())).thenReturn(user);
         when(bookingRepository.findByItemOwnerIdOrderByStartDesc(anyLong(),any(Pageable.class)))
                 .thenReturn(List.of(booking));
         List<BookingDto> bookingDtoList = bookingService.getBookingsByItemsOwnerId(user.getId(), "ALL", pagination);
 
-        assertEquals(1, bookingDtoList.size());
+        AssertionErrors.assertEquals("There should have been 1 Booking in the list", 1, bookingDtoList.size());
         assertEquals(booking.getId(), bookingDtoList.get(0).getId());
     }
 
     @Test
-    void getBookingsByItemsOwnerIdCurrentTest() {
+    void testGetBookingsByItemsOwnerIdCurrent() {
         when(userService.getUserIfExistOrThrow(anyLong())).thenReturn(user);
         when(bookingRepository.findByItemOwnerIdCurrent(anyLong(), any(), any(Pageable.class)))
                 .thenReturn(List.of(booking));
         List<BookingDto> bookingDtoList = bookingService.getBookingsByItemsOwnerId(user.getId(), "CURRENT", pagination);
 
-        assertEquals(1, bookingDtoList.size());
+        AssertionErrors.assertEquals("There should have been 1 Booking in the list", 1, bookingDtoList.size());
         assertEquals(booking.getId(), bookingDtoList.get(0).getId());
     }
 
     @Test
-    void getBookingsByItemsOwnerIdPastTest() {
+    void testGetBookingsByItemsOwnerIdPast() {
         when(userService.getUserIfExistOrThrow(anyLong())).thenReturn(user);
         when(bookingRepository.findByItemOwnerIdPast(anyLong(), any(), any(Pageable.class)))
                 .thenReturn(List.of(booking));
         List<BookingDto> bookingDtoList = bookingService.getBookingsByItemsOwnerId(user.getId(), "PAST", pagination);
 
-        assertEquals(1, bookingDtoList.size());
+        AssertionErrors.assertEquals("There should have been 1 Booking in the list", 1, bookingDtoList.size());
         assertEquals(booking.getId(), bookingDtoList.get(0).getId());
     }
 
     @Test
-    void getBookingsByItemsOwnerIdFutureTest() {
+    void testGetBookingsByItemsOwnerIdFuture() {
         when(userService.getUserIfExistOrThrow(anyLong())).thenReturn(user);
         when(bookingRepository.findByItemOwnerIdFuture(anyLong(), any(), any(Pageable.class)))
                 .thenReturn(List.of(booking));
         List<BookingDto> bookingDtoList = bookingService.getBookingsByItemsOwnerId(user.getId(), "FUTURE", pagination);
 
-        assertEquals(1, bookingDtoList.size());
+        AssertionErrors.assertEquals("There should have been 1 Booking in the list", 1, bookingDtoList.size());
         assertEquals(booking.getId(), bookingDtoList.get(0).getId());
     }
 
     @Test
-    void getBookingsByItemsOwnerIdWaitingTest() {
+    void testGetBookingsByItemsOwnerIdWaiting() {
         when(userService.getUserIfExistOrThrow(anyLong())).thenReturn(user);
         when(bookingRepository.findByItemOwnerIdAndStatus(anyLong(), any(), any(Pageable.class)))
                 .thenReturn(List.of(booking));
         List<BookingDto> bookingDtoList = bookingService.getBookingsByItemsOwnerId(user.getId(), "WAITING", pagination);
 
-        assertEquals(1, bookingDtoList.size());
+        AssertionErrors.assertEquals("There should have been 1 Booking in the list", 1, bookingDtoList.size());
         assertEquals(booking.getId(), bookingDtoList.get(0).getId());
     }
 
     @Test
-    void getBookingsByItemsOwnerIdRejectedTest() {
+    void testGetBookingsByItemsOwnerIdRejected() {
         when(userService.getUserIfExistOrThrow(anyLong())).thenReturn(user);
         when(bookingRepository.findByItemOwnerIdAndStatus(anyLong(), any(), any(Pageable.class)))
                 .thenReturn(List.of(booking));
         List<BookingDto> bookingDtoList = bookingService.getBookingsByItemsOwnerId(user.getId(), "REJECTED", pagination);
 
-        assertEquals(1, bookingDtoList.size());
+        AssertionErrors.assertEquals("There should have been 1 Booking in the list", 1, bookingDtoList.size());
         assertEquals(booking.getId(), bookingDtoList.get(0).getId());
     }
 
     @Test
-    void getBookingsByItemsOwnerIdUnsupportedStatusTest() {
+    void testGetBookingsByItemsOwnerIdUnsupportedStatus() {
         when(userService.getUserIfExistOrThrow(anyLong())).thenReturn(user);
 
         UnsupportedStatusException exception = assertThrows(

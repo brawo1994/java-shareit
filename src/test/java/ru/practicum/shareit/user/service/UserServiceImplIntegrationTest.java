@@ -16,7 +16,7 @@ class UserServiceImplIntegrationTest {
     private final UserService userService;
 
     @Test
-    void createUserTest() {
+    void testCreateUser() {
 
         UserDto userDto = UserDto.builder()
                 .name("Ivan")

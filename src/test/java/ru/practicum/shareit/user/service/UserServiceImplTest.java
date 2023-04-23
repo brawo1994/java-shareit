@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.AssertionErrors;
 import ru.practicum.shareit.exeption.NotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.mapper.UserMapper;
@@ -19,7 +20,11 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
@@ -42,7 +47,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void createUserTest() {
+    void testCreateUser() {
         when(userRepository.save(any(User.class))).thenReturn(user);
         UserDto userDto = userService.createUser(UserMapper.toDto(user));
 
@@ -53,7 +58,7 @@ class UserServiceImplTest {
 
 
     @Test
-    void updateUserTest() {
+    void testUpdateUser() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.ofNullable(user));
         when(userRepository.save(any(User.class))).thenReturn(user);
         UserDto userDto = UserMapper.toDto(user);
@@ -65,7 +70,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void updateUserWithoutEmailTest() {
+    void testUpdateUserWithoutEmail() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.ofNullable(user));
         when(userRepository.save(any(User.class))).thenReturn(user);
         user.setEmail(null);
@@ -78,7 +83,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void updateUserWithoutNameTest() {
+    void testUpdateUserWithoutName() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.ofNullable(user));
         when(userRepository.save(any(User.class))).thenReturn(user);
         user.setName(null);
@@ -91,7 +96,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void updateUserNotFound() {
+    void testUpdateUserNotFound() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
         UserDto userDto = UserMapper.toDto(user);
         userDto.setId(10L);
@@ -105,7 +110,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void deleteUserTest() {
+    void testDeleteUser() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.ofNullable(user));
         userService.deleteUser(user.getId());
 
@@ -114,7 +119,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void deleteUserTestNotFound() {
+    void testDeleteUserTestNotFound() {
         when(userRepository.findById(1L))
                 .thenReturn(Optional.empty());
 
@@ -127,7 +132,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void getUserByIdTest() {
+    void testGetUserById() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.ofNullable(user));
         UserDto userDto = userService.getUserById(user.getId());
 
@@ -137,23 +142,23 @@ class UserServiceImplTest {
     }
 
     @Test
-    void getAllUsersTest() {
+    void testGetAllUsers() {
         when(userRepository.findAll())
                 .thenReturn(List.of(user));
         List<UserDto> userDto = userService.getAllUsers();
 
-        assertEquals(1, userDto.size());
+        AssertionErrors.assertEquals("There should have been 1 User in the list", 1, userDto.size());
         assertEquals(user.getId(), userDto.get(0).getId());
         assertEquals(user.getName(), userDto.get(0).getName());
         assertEquals(user.getEmail(), userDto.get(0).getEmail());
     }
 
     @Test
-    void getAllUsersWithoutUsersTest() {
+    void testGetAllUsersWithoutUsers() {
         when(userRepository.findAll())
                 .thenReturn(Collections.emptyList());
         List<UserDto> userDto = userService.getAllUsers();
 
-        assertEquals(0, userDto.size());
+        AssertionErrors.assertEquals("There should have been 0 User in the list", 0, userDto.size());
     }
 }

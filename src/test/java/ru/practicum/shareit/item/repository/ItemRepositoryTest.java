@@ -7,6 +7,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.test.util.AssertionErrors;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.request.model.Request;
 import ru.practicum.shareit.user.model.User;
@@ -15,7 +16,6 @@ import ru.practicum.shareit.util.Pagination;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @DataJpaTest
@@ -49,49 +49,49 @@ class ItemRepositoryTest {
             .build();
 
     @Test
-    void contextLoadsTest() {
+    void testContextLoads() {
         assertNotNull(entityManager);
     }
 
     @Test
-    void searchTest() {
+    void testSearch() {
         entityManager.persist(user);
         entityManager.persist(request);
         entityManager.persist(item);
         List<Item> itemList = itemRepository.findItemsByText("item", pageable);
 
-        assertEquals(itemList.size(), 1);
+        AssertionErrors.assertEquals("There should have been 1 Item in the list", 1, itemList.size());
     }
 
     @Test
-    void searchNotFoundTest() {
+    void testSearchNotFound() {
         entityManager.persist(user);
         entityManager.persist(request);
         entityManager.persist(item);
-        List<Item> itemList = itemRepository.findItemsByText("itemmmm", pageable);
+        List<Item> itemList = itemRepository.findItemsByText("itemName", pageable);
 
-        assertEquals(itemList.size(), 0);
+        AssertionErrors.assertEquals("There should have been 0 Item in the list", 0, itemList.size());
     }
 
     @Test
-    void findAllByRequestIdsTest() {
+    void testFindAllByRequestIds() {
         entityManager.persist(user);
         entityManager.persist(request);
         entityManager.persist(item);
         List<Item> itemList = itemRepository
                 .findAllByRequestIds(List.of(request.getId()));
 
-        assertEquals(itemList.size(), 1);
+        AssertionErrors.assertEquals("There should have been 1 Item in the list", 1, itemList.size());
     }
 
     @Test
-    void findAllByRequestIdsNotFoundTest() {
+    void testFindAllByRequestIdsNotFound() {
         entityManager.persist(user);
         entityManager.persist(request);
         entityManager.persist(item);
         List<Item> itemList = itemRepository
                 .findAllByRequestIds(List.of(100L, 101L, 102L));
 
-        assertEquals(itemList.size(), 0);
+        AssertionErrors.assertEquals("There should have been 0 Item in the list", 0, itemList.size());
     }
 }

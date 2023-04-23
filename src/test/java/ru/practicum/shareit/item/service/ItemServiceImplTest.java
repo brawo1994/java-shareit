@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.test.util.AssertionErrors;
 import ru.practicum.shareit.booking.dto.BookingShortDto;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
@@ -36,7 +37,12 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ItemServiceImplTest {
@@ -101,7 +107,7 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void createItemTest() {
+    void testCreateItem() {
         when(userService.getUserIfExistOrThrow(anyLong())).thenReturn(user);
         when(itemRepository.save(any(Item.class))).thenReturn(item);
         when(requestRepository.findById(anyLong())).thenReturn(Optional.ofNullable(request));
@@ -111,7 +117,7 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void createItemIfRequestNotExistTest() {
+    void testCreateItemIfRequestNotExist() {
         when(userService.getUserIfExistOrThrow(anyLong())).thenReturn(user);
         when(requestRepository.findById(anyLong())).thenReturn(Optional.empty());
 
@@ -124,7 +130,7 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void updateItemTest() {
+    void testUpdateItem() {
         when(userService.getUserIfExistOrThrow(anyLong())).thenReturn(user);
         when(itemRepository.findById(anyLong())).thenReturn(Optional.ofNullable(item));
         when(itemRepository.save(any(Item.class))).thenReturn(item);
@@ -134,7 +140,7 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void updateItemWithoutNameAndDescriptionTest() {
+    void testUpdateItemWithoutNameAndDescription() {
         item.setName(null);
         item.setDescription(null);
         when(userService.getUserIfExistOrThrow(anyLong())).thenReturn(user);
@@ -146,7 +152,7 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void updateItemWithoutAvailableTest() {
+    void testUpdateItemWithoutAvailable() {
         item.setAvailable(null);
         when(userService.getUserIfExistOrThrow(anyLong())).thenReturn(user);
         when(itemRepository.findById(anyLong())).thenReturn(Optional.ofNullable(item));
@@ -157,7 +163,7 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void updateItemWhenItemNotOwnedUserTest() {
+    void testUpdateItemWhenItemNotOwnedUser() {
         when(userService.getUserIfExistOrThrow(anyLong())).thenReturn(user);
         when(itemRepository.findById(anyLong())).thenReturn(Optional.ofNullable(item));
 
@@ -170,7 +176,7 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void updateItemWithoutItemTest() {
+    void testUpdateItemWithoutItem() {
         when(userService.getUserIfExistOrThrow(anyLong())).thenReturn(user);
         when(itemRepository.findById(anyLong())).thenReturn(Optional.empty());
 
@@ -183,7 +189,7 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void deleteItemTest() {
+    void testDeleteItem() {
         when(userService.getUserIfExistOrThrow(anyLong())).thenReturn(user);
         when(itemRepository.findById(anyLong())).thenReturn(Optional.ofNullable(item));
 
@@ -195,7 +201,7 @@ class ItemServiceImplTest {
 
 
     @Test
-    void getItemByIdTest() {
+    void testGetItemById() {
         when(itemRepository.findById(anyLong())).thenReturn(Optional.ofNullable(item));
         when(commentRepository.findAllByItemId(anyLong())).thenReturn(Collections.emptyList());
         when(bookingRepository.findNextBooking(anyLong(), any())).thenReturn(List.of(booking));
@@ -208,37 +214,37 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void getItemsByUserIdTest() {
+    void testGetItemsByUserId() {
         when(userService.getUserIfExistOrThrow(anyLong())).thenReturn(user);
         when(itemRepository.findItemsByOwnerId(anyLong(), any(Pageable.class))).thenReturn(List.of(item));
         when(bookingRepository.findNextBooking(anyLong(), any())).thenReturn(List.of(booking));
         when(bookingRepository.findLastBooking(anyLong(), any())).thenReturn(List.of(booking));
         List<ItemDto> itemDtoList = itemService.getItemsByUserId(user.getId(), new Pagination(0, 10, Sort.unsorted()));
 
-        assertEquals(1, itemDtoList.size());
+        AssertionErrors.assertEquals("There should have been 1 Item in the list", 1, itemDtoList.size());
         assertEquals(item.getId(), itemDtoList.get(0).getId());
         assertEquals(bookingShortDto, itemDtoList.get(0).getLastBooking());
         assertEquals(bookingShortDto, itemDtoList.get(0).getNextBooking());
     }
 
     @Test
-    void searchItemsByTextTest() {
+    void testSearchItemsByText() {
         when(itemRepository.findItemsByText(anyString(), any(Pageable.class))).thenReturn(List.of(item));
         List<ItemDto> itemDtoList = itemService.searchItemsByText("text", new Pagination(0, 10, Sort.unsorted()));
 
-        assertEquals(1, itemDtoList.size());
+        AssertionErrors.assertEquals("There should have been 1 Item in the list", 1, itemDtoList.size());
         assertEquals(item.getId(), itemDtoList.get(0).getId());
     }
 
     @Test
-    void searchItemsByTextEmptyTest() {
+    void testSearchItemsByTextEmpty() {
         List<ItemDto> itemDtoList = itemService.searchItemsByText("", new Pagination(0, 10, Sort.unsorted()));
 
-        assertEquals(0, itemDtoList.size());
+        AssertionErrors.assertEquals("There should have been 0 Item in the list", 0, itemDtoList.size());
     }
 
     @Test
-    void createCommentTest() {
+    void testCreateComment() {
         Comment comment = Comment.builder()
                 .id(1L)
                 .text("text")
@@ -255,7 +261,7 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void createCommentWithoutBookingsTest() {
+    void testCreateCommentWithoutBookings() {
         Comment comment = Comment.builder()
                 .id(1L)
                 .text("text")

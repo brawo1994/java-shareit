@@ -7,6 +7,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.test.util.AssertionErrors;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.enums.BookingStatus;
 import ru.practicum.shareit.item.model.Item;
@@ -16,7 +17,8 @@ import ru.practicum.shareit.util.Pagination;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @DataJpaTest
 @AutoConfigureTestDatabase
@@ -52,12 +54,12 @@ class BookingRepositoryTest {
             .build();
 
     @Test
-    void contextLoads() {
+    void testContextLoads() {
         assertNotNull(entityManager);
     }
 
     @Test
-    void findByBookerIdCurrentTest() {
+    void testFindByBookerIdCurrent() {
         booking.setStart(LocalDateTime.now().minusHours(1));
         booking.setEnd(LocalDateTime.now().plusHours(1));
 
@@ -69,12 +71,12 @@ class BookingRepositoryTest {
         List<Booking> bookingList = bookingRepository
                 .findByBookerIdCurrent(user2.getId(), LocalDateTime.now(), pageable);
 
-        assertEquals(1, bookingList.size());
+        AssertionErrors.assertEquals("There should have been 1 Booking in the list", 1, bookingList.size());
         assertEquals(booking, bookingList.get(0));
     }
 
     @Test
-    void findByBookerIdPastTest() {
+    void testFindByBookerIdPast() {
         booking.setStart(LocalDateTime.now().minusHours(2));
         booking.setEnd(LocalDateTime.now().minusHours(1));
 
@@ -86,12 +88,12 @@ class BookingRepositoryTest {
         List<Booking> bookingList = bookingRepository
                 .findByBookerIdPast(user2.getId(), LocalDateTime.now(), pageable);
 
-        assertEquals(1, bookingList.size());
+        AssertionErrors.assertEquals("There should have been 1 Booking in the list", 1, bookingList.size());
         assertEquals(booking, bookingList.get(0));
     }
 
     @Test
-    void findByBookerIdFutureTest() {
+    void testFindByBookerIdFuture() {
         booking.setStart(LocalDateTime.now().plusHours(1));
         booking.setEnd(LocalDateTime.now().plusHours(2));
 
@@ -103,12 +105,12 @@ class BookingRepositoryTest {
         List<Booking> bookingList = bookingRepository
                 .findByBookerIdFuture(user2.getId(), LocalDateTime.now(), pageable);
 
-        assertEquals(1, bookingList.size());
+        AssertionErrors.assertEquals("There should have been 1 Booking in the list", 1, bookingList.size());
         assertEquals(booking, bookingList.get(0));
     }
 
     @Test
-    void findByBookerIdAndStatusTest() {
+    void testFindByBookerIdAndStatus() {
         booking.setStatus(BookingStatus.WAITING);
         booking.setStart(LocalDateTime.now());
         booking.setEnd(LocalDateTime.now().plusHours(1));
@@ -121,12 +123,12 @@ class BookingRepositoryTest {
         List<Booking> bookingList = bookingRepository
                 .findByBookerIdAndStatus(user2.getId(), BookingStatus.WAITING, pageable);
 
-        assertEquals(1, bookingList.size());
+        AssertionErrors.assertEquals("There should have been 1 Booking in the list", 1, bookingList.size());
         assertEquals(booking, bookingList.get(0));
     }
 
     @Test
-    void findByItemOwnerIdCurrentTest() {
+    void testFindByItemOwnerIdCurrent() {
         booking.setStart(LocalDateTime.now().minusHours(1));
         booking.setEnd(LocalDateTime.now().plusHours(1));
 
@@ -138,13 +140,13 @@ class BookingRepositoryTest {
         List<Booking> bookingList = bookingRepository
                 .findByItemOwnerIdCurrent(user.getId(), LocalDateTime.now(), pageable);
 
-        assertEquals(1, bookingList.size());
+        AssertionErrors.assertEquals("There should have been 1 Booking in the list", 1, bookingList.size());
         assertEquals(booking, bookingList.get(0));
 
     }
 
     @Test
-    void findByItemOwnerIdPastTest() {
+    void testFindByItemOwnerIdPast() {
         booking.setStart(LocalDateTime.now().minusHours(2));
         booking.setEnd(LocalDateTime.now().minusHours(1));
 
@@ -156,12 +158,12 @@ class BookingRepositoryTest {
         List<Booking> bookingList = bookingRepository
                 .findByItemOwnerIdPast(user.getId(), LocalDateTime.now(), pageable);
 
-        assertEquals(1, bookingList.size());
+        AssertionErrors.assertEquals("There should have been 1 Booking in the list", 1, bookingList.size());
         assertEquals(booking, bookingList.get(0));
     }
 
     @Test
-    void findByItemOwnerIdFutureTest() {
+    void testFindByItemOwnerIdFuture() {
         booking.setStart(LocalDateTime.now().plusHours(1));
         booking.setEnd(LocalDateTime.now().plusHours(2));
 
@@ -173,12 +175,12 @@ class BookingRepositoryTest {
         List<Booking> bookingList = bookingRepository
                 .findByItemOwnerIdFuture(user.getId(), LocalDateTime.now(), pageable);
 
-        assertEquals(1, bookingList.size());
+        AssertionErrors.assertEquals("There should have been 1 Booking in the list", 1, bookingList.size());
         assertEquals(booking, bookingList.get(0));
     }
 
     @Test
-    void findByItemOwnerIdAndStatusTest() {
+    void testFindByItemOwnerIdAndStatus() {
         booking.setStatus(BookingStatus.WAITING);
         booking.setStart(LocalDateTime.now());
         booking.setEnd(LocalDateTime.now().plusHours(1));
@@ -191,12 +193,12 @@ class BookingRepositoryTest {
         List<Booking> bookingList = bookingRepository
                 .findByItemOwnerIdAndStatus(user.getId(), BookingStatus.WAITING, pageable);
 
-        assertEquals(1, bookingList.size());
+        AssertionErrors.assertEquals("There should have been 1 Booking in the list", 1, bookingList.size());
         assertEquals(booking, bookingList.get(0));
     }
 
     @Test
-    void findLastBookingTest() {
+    void testFindLastBooking() {
         booking.setStart(LocalDateTime.now().minusHours(2));
         booking.setEnd(LocalDateTime.now().minusHours(1));
         booking.setStatus(BookingStatus.APPROVED);
@@ -209,13 +211,13 @@ class BookingRepositoryTest {
         List<Booking> lastBookingList = bookingRepository
                 .findLastBooking(item.getId(), LocalDateTime.now());
 
-        assertFalse(lastBookingList.isEmpty());
+        AssertionErrors.assertEquals("There should have been 1 Booking in the list", 1, lastBookingList.size());
         assertEquals(lastBookingList.get(0).getStart(), booking.getStart());
         assertEquals(lastBookingList.get(0).getEnd(), booking.getEnd());
     }
 
     @Test
-    void findNextBookingTest() {
+    void testFindNextBooking() {
         booking.setStart(LocalDateTime.now().plusHours(1));
         booking.setEnd(LocalDateTime.now().plusHours(2));
         booking.setStatus(BookingStatus.APPROVED);
@@ -228,13 +230,13 @@ class BookingRepositoryTest {
         List<Booking> nextBookingList = bookingRepository
                 .findNextBooking(item.getId(), LocalDateTime.now());
 
-        assertFalse(nextBookingList.isEmpty());
+        AssertionErrors.assertEquals("There should have been 1 Booking in the list", 1, nextBookingList.size());
         assertEquals(nextBookingList.get(0).getStart(), booking.getStart());
         assertEquals(nextBookingList.get(0).getEnd(), booking.getEnd());
     }
 
     @Test
-    void findAllByBookerIdAndItemIdTest() {
+    void testFindAllByBookerIdAndItemId() {
         booking.setStart(LocalDateTime.now().minusHours(2));
         booking.setEnd(LocalDateTime.now().minusHours(1));
 
@@ -246,7 +248,7 @@ class BookingRepositoryTest {
         List<Booking> bookingList = bookingRepository
                 .findAllByBookerIdAndItemId(user2.getId(), item.getId(), LocalDateTime.now());
 
-        assertEquals(1, bookingList.size());
+        AssertionErrors.assertEquals("There should have been 1 Booking in the list", 1, bookingList.size());
         assertEquals(booking, bookingList.get(0));
     }
 }

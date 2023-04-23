@@ -5,7 +5,7 @@ import ru.practicum.shareit.request.model.Request;
 
 import java.util.ArrayList;
 
-public class RequestMapper {
+public final class RequestMapper {
 
     private RequestMapper() {
         throw new IllegalStateException("Utility class");

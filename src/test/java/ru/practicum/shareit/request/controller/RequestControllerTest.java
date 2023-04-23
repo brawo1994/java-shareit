@@ -63,7 +63,7 @@ class RequestControllerTest {
     }
 
     @Test
-    void createRequestTest() throws Exception {
+    void testCreateRequest() throws Exception {
         when(requestService.createRequest(anyLong(), any(RequestDto.class)))
                 .thenReturn(requestDto);
 
@@ -76,7 +76,7 @@ class RequestControllerTest {
     }
 
     @Test
-    void getRequestListTest() throws Exception {
+    void testGetRequestList() throws Exception {
         when(requestService.getRequestListByOwnerId(anyLong()))
                 .thenReturn(List.of(requestDto));
 
@@ -87,7 +87,7 @@ class RequestControllerTest {
     }
 
     @Test
-    void getAllRequestListTest() throws Exception {
+    void testGetAllRequestList() throws Exception {
         when(requestService.getAllRequestList(anyLong(), any(Pageable.class)))
                 .thenReturn(List.of(requestDto));
 
@@ -98,7 +98,7 @@ class RequestControllerTest {
     }
 
     @Test
-    void getRequestTest() throws Exception {
+    void testGetRequest() throws Exception {
         when(requestService.getRequestById(anyLong(), anyLong()))
                 .thenReturn(requestDto);
 

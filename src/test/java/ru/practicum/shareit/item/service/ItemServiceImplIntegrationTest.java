@@ -7,6 +7,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.test.util.AssertionErrors;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
@@ -25,7 +26,7 @@ class ItemServiceImplIntegrationTest {
     private final ItemService itemService;
 
     @Test
-    void searchItemsByTextTest() {
+    void testSearchItemsByText() {
 
         final Pageable pageable = new Pagination(0, 10, Sort.unsorted());
 
@@ -44,7 +45,7 @@ class ItemServiceImplIntegrationTest {
 
         List<ItemDto> itemDtoList = itemService.searchItemsByText("Petr", pageable);
 
+        AssertionErrors.assertEquals("There should have been 1 Item in the list", 1, itemDtoList.size());
         assertEquals(resultItemDto, itemDtoList.get(0));
-        assertEquals(1, itemDtoList.size());
     }
 }

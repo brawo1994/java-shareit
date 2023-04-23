@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.util.AssertionErrors;
 import ru.practicum.shareit.request.dto.RequestDto;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
@@ -22,7 +23,7 @@ class RequestServiceImplIntegrationTest {
     private final RequestService requestService;
 
     @Test
-    void getRequestListByOwnerIdTest() {
+    void testGetRequestListByOwnerId() {
 
         UserDto userDto = UserDto.builder()
                 .name("Ivan")
@@ -42,8 +43,8 @@ class RequestServiceImplIntegrationTest {
 
         List<RequestDto> requestDtoList = requestService.getRequestListByOwnerId(resultUserDto.getId());
 
+        AssertionErrors.assertEquals("There should have been 2 Request in the list", 2, requestDtoList.size());
         assertEquals(resultRequestDto, requestDtoList.get(0));
         assertEquals(resultRequestDto2, requestDtoList.get(1));
-        assertEquals(2, requestDtoList.size());
     }
 }

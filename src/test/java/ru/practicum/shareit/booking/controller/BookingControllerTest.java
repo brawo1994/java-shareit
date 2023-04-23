@@ -22,7 +22,10 @@ import ru.practicum.shareit.user.model.User;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -75,7 +78,7 @@ class BookingControllerTest {
     }
 
     @Test
-    void createBookingTest() throws Exception {
+    void testCreateBooking() throws Exception {
         when(bookingService.createBooking(anyLong(), any(BookingDto.class)))
                 .thenReturn(bookingDto);
 
@@ -88,7 +91,7 @@ class BookingControllerTest {
     }
 
     @Test
-    void approvedBookingTest() throws Exception {
+    void testApprovedBooking() throws Exception {
         when(bookingService.approvedBooking(anyLong(), anyLong(), anyBoolean()))
                 .thenReturn(bookingDto);
 
@@ -102,7 +105,7 @@ class BookingControllerTest {
     }
 
     @Test
-    void getBookingByIdTest() throws Exception {
+    void testGetBookingById() throws Exception {
         when(bookingService.getBookingById(anyLong(), anyLong()))
                 .thenReturn(bookingDto);
 
@@ -113,7 +116,7 @@ class BookingControllerTest {
     }
 
     @Test
-    void getBookingsByBookerIdTest() throws Exception {
+    void testGetBookingsByBookerId() throws Exception {
         when(bookingService.getBookingsByBookerId(anyLong(), anyString(), any(Pageable.class)))
                 .thenReturn(List.of(bookingDto));
 
@@ -124,7 +127,7 @@ class BookingControllerTest {
     }
 
     @Test
-    void getBookingsByItemsOwnerIdTest() throws Exception {
+    void testGetBookingsByItemsOwnerId() throws Exception {
         when(bookingService.getBookingsByItemsOwnerId(anyLong(), anyString(), any(Pageable.class)))
                 .thenReturn(List.of(bookingDto));
 
