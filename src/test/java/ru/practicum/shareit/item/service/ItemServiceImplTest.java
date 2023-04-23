@@ -198,8 +198,8 @@ class ItemServiceImplTest {
     void getItemByIdTest() {
         when(itemRepository.findById(anyLong())).thenReturn(Optional.ofNullable(item));
         when(commentRepository.findAllByItemId(anyLong())).thenReturn(Collections.emptyList());
-        when(bookingRepository.findNextBooking(anyLong(), any())).thenReturn(Optional.of(booking));
-        when(bookingRepository.findLastBooking(anyLong(), any())).thenReturn(Optional.of(booking));
+        when(bookingRepository.findNextBooking(anyLong(), any())).thenReturn(List.of(booking));
+        when(bookingRepository.findLastBooking(anyLong(), any())).thenReturn(List.of(booking));
         ItemDto itemDto = itemService.getItemById(item.getId(), user.getId());
 
         assertEquals(item.getId(), itemDto.getId());
@@ -211,8 +211,8 @@ class ItemServiceImplTest {
     void getItemsByUserIdTest() {
         when(userService.getUserIfExistOrThrow(anyLong())).thenReturn(user);
         when(itemRepository.findItemsByOwnerId(anyLong(), any(Pageable.class))).thenReturn(List.of(item));
-        when(bookingRepository.findNextBooking(anyLong(), any())).thenReturn(Optional.of(booking));
-        when(bookingRepository.findLastBooking(anyLong(), any())).thenReturn(Optional.of(booking));
+        when(bookingRepository.findNextBooking(anyLong(), any())).thenReturn(List.of(booking));
+        when(bookingRepository.findLastBooking(anyLong(), any())).thenReturn(List.of(booking));
         List<ItemDto> itemDtoList = itemService.getItemsByUserId(user.getId(), new Pagination(0, 10, Sort.unsorted()));
 
         assertEquals(1, itemDtoList.size());

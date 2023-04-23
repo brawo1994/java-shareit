@@ -15,7 +15,6 @@ import ru.practicum.shareit.util.Pagination;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -200,36 +199,38 @@ class BookingRepositoryTest {
     void findLastBookingTest() {
         booking.setStart(LocalDateTime.now().minusHours(2));
         booking.setEnd(LocalDateTime.now().minusHours(1));
+        booking.setStatus(BookingStatus.APPROVED);
 
         entityManager.persist(user);
         entityManager.persist(user2);
         entityManager.persist(item);
         entityManager.persist(booking);
 
-        Optional<Booking> lastBooking = bookingRepository
+        List<Booking> lastBookingList = bookingRepository
                 .findLastBooking(item.getId(), LocalDateTime.now());
 
-        assertTrue(lastBooking.isPresent());
-        assertEquals(lastBooking.get().getStart(), booking.getStart());
-        assertEquals(lastBooking.get().getEnd(), booking.getEnd());
+        assertFalse(lastBookingList.isEmpty());
+        assertEquals(lastBookingList.get(0).getStart(), booking.getStart());
+        assertEquals(lastBookingList.get(0).getEnd(), booking.getEnd());
     }
 
     @Test
     void findNextBookingTest() {
         booking.setStart(LocalDateTime.now().plusHours(1));
         booking.setEnd(LocalDateTime.now().plusHours(2));
+        booking.setStatus(BookingStatus.APPROVED);
 
         entityManager.persist(user);
         entityManager.persist(user2);
         entityManager.persist(item);
         entityManager.persist(booking);
 
-        Optional<Booking> lastBooking = bookingRepository
+        List<Booking> nextBookingList = bookingRepository
                 .findNextBooking(item.getId(), LocalDateTime.now());
 
-        assertTrue(lastBooking.isPresent());
-        assertEquals(lastBooking.get().getStart(), booking.getStart());
-        assertEquals(lastBooking.get().getEnd(), booking.getEnd());
+        assertFalse(nextBookingList.isEmpty());
+        assertEquals(nextBookingList.get(0).getStart(), booking.getStart());
+        assertEquals(nextBookingList.get(0).getEnd(), booking.getEnd());
     }
 
     @Test

@@ -26,7 +26,6 @@ import ru.practicum.shareit.user.service.UserService;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -145,10 +144,12 @@ public class ItemServiceImpl implements ItemService {
     }
 
     private void addBookingToItemDto(ItemDto itemDto) {
-        Optional<Booking> nextBooking = bookingRepository.findNextBooking(itemDto.getId(), LocalDateTime.now());
-        nextBooking.ifPresent(booking -> itemDto.setNextBooking(BookingMapper.toShortDto(booking)));
-        Optional<Booking> lastBooking = bookingRepository.findLastBooking(itemDto.getId(), LocalDateTime.now());
-        lastBooking.ifPresent(booking -> itemDto.setLastBooking(BookingMapper.toShortDto(booking)));
+        List<Booking> nextBookingList = bookingRepository.findNextBooking(itemDto.getId(), LocalDateTime.now());
+        if (!nextBookingList.isEmpty())
+            itemDto.setNextBooking(BookingMapper.toShortDto(nextBookingList.get(0)));
+        List<Booking> lastBookingList = bookingRepository.findLastBooking(itemDto.getId(), LocalDateTime.now());
+        if (!lastBookingList.isEmpty())
+            itemDto.setLastBooking(BookingMapper.toShortDto(lastBookingList.get(0)));
     }
 
     private void addCommentsToItemDto(ItemDto itemDto) {

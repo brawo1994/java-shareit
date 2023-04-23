@@ -9,7 +9,6 @@ import ru.practicum.shareit.booking.model.enums.BookingStatus;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
@@ -67,13 +66,17 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     @Query("select booking from Booking booking " +
             "where booking.item.id = ?1 " +
-            "and booking.start = (select max (booking2.start) from Booking booking2 where booking2.start <= ?2)")
-    Optional<Booking> findLastBooking(long itemId, LocalDateTime time);
+            "and booking.start < ?2 " +
+            "and booking.status = 'APPROVED' " +
+            "order by booking.start desc")
+    List<Booking> findLastBooking(long itemId, LocalDateTime time);
 
     @Query("select booking from Booking booking " +
             "where booking.item.id = ?1 " +
-            "and booking.start = (select min (booking2.start) from Booking booking2 where booking2.start > ?2)")
-    Optional<Booking> findNextBooking(long itemId, LocalDateTime time);
+            "and booking.start > ?2 " +
+            "and booking.status = 'APPROVED' " +
+            "order by booking.start")
+    List<Booking> findNextBooking(long itemId, LocalDateTime time);
 
     @Query("select booking from Booking booking " +
             "where booking.booker.id = ?1 " +
