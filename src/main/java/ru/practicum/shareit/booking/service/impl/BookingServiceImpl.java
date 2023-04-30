@@ -2,6 +2,7 @@ package ru.practicum.shareit.booking.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
@@ -36,7 +37,7 @@ public class BookingServiceImpl implements BookingService {
     public BookingDto createBooking(long userId, BookingDto bookingDto) {
         Item item = itemService.getItemIfExistOrThrow(bookingDto.getItemId());
         User user = userService.getUserIfExistOrThrow(userId);
-        if (item.getOwnerId() == userId) {
+        if (item.getOwner().getId() == userId) {
             throw new NotFoundException("Владелец не может забронировать свою вещь");
         }
         if (item.getAvailable().equals(false)) {
@@ -44,6 +45,9 @@ public class BookingServiceImpl implements BookingService {
         }
         if (bookingDto.getEnd().isBefore(bookingDto.getStart())) {
             throw new BadRequestException("Дата окончания бронирования не может быть раньше даты начала бронирования");
+        }
+        if (bookingDto.getEnd().equals(bookingDto.getStart())) {
+            throw new BadRequestException("Дата окончания бронирования не может совпадать с датой начала бронирования");
         }
         bookingDto.setStatus(BookingStatus.WAITING);
         bookingDto.setBooker(user);
@@ -57,7 +61,7 @@ public class BookingServiceImpl implements BookingService {
     @Transactional
     public BookingDto approvedBooking(long userId, long bookingId, boolean approved) {
         Booking booking = getBookingIfExistOrThrow(bookingId);
-        if (userId != booking.getItem().getOwnerId()) {
+        if (userId != booking.getItem().getOwner().getId()) {
             throw new NotFoundException("У вас нет вещи с id " + booking.getItem().getId());
         }
         if (booking.getStatus() == BookingStatus.APPROVED) {
@@ -75,33 +79,33 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public BookingDto getBookingById(long userId, long bookingId) {
         Booking booking = getBookingIfExistOrThrow(bookingId);
-        if (booking.getBooker().getId() == userId || booking.getItem().getOwnerId() == userId) {
+        if (booking.getBooker().getId() == userId || booking.getItem().getOwner().getId() == userId) {
             return BookingMapper.toDto(booking);
         } else throw new NotFoundException("Вы не являетесь владельцем бронирования или вещи");
     }
 
     @Override
-    public List<BookingDto> getBookingsByBookerId(long userId, String state) {
+    public List<BookingDto> getBookingsByBookerId(long userId, String state, Pageable pageable) {
         userService.getUserIfExistOrThrow(userId);
         List<Booking> books = new ArrayList<>();
         switch (state) {
             case "ALL":
-                books.addAll(bookingRepository.findAllByBookerIdOrderByStartDesc(userId));
+                books.addAll(bookingRepository.findAllByBookerIdOrderByStartDesc(userId, pageable));
                 break;
             case "CURRENT":
-                books.addAll(bookingRepository.findByBookerIdCurrent(userId, LocalDateTime.now()));
+                books.addAll(bookingRepository.findByBookerIdCurrent(userId, LocalDateTime.now(), pageable));
                 break;
             case "PAST":
-                books.addAll(bookingRepository.findByBookerIdPast(userId, LocalDateTime.now()));
+                books.addAll(bookingRepository.findByBookerIdPast(userId, LocalDateTime.now(), pageable));
                 break;
             case "FUTURE":
-                books.addAll(bookingRepository.findByBookerIdFuture(userId, LocalDateTime.now()));
+                books.addAll(bookingRepository.findByBookerIdFuture(userId, LocalDateTime.now(), pageable));
                 break;
             case "WAITING":
-                books.addAll(bookingRepository.findByBookerIdAndStatus(userId, BookingStatus.WAITING));
+                books.addAll(bookingRepository.findByBookerIdAndStatus(userId, BookingStatus.WAITING, pageable));
                 break;
             case "REJECTED":
-                books.addAll(bookingRepository.findByBookerIdAndStatus(userId, BookingStatus.REJECTED));
+                books.addAll(bookingRepository.findByBookerIdAndStatus(userId, BookingStatus.REJECTED, pageable));
                 break;
             default:
                 throw new UnsupportedStatusException("Unknown state: " + state);
@@ -112,27 +116,27 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingDto> getBookingsByItemsOwnerId(long userId, String state) {
+    public List<BookingDto> getBookingsByItemsOwnerId(long userId, String state, Pageable pageable) {
         userService.getUserIfExistOrThrow(userId);
         List<Booking> books = new ArrayList<>();
         switch (state) {
             case "ALL":
-                books.addAll(bookingRepository.findByItemOwnerIdOrderByStartDesc(userId));
+                books.addAll(bookingRepository.findByItemOwnerIdOrderByStartDesc(userId, pageable));
                 break;
             case "CURRENT":
-                books.addAll(bookingRepository.findByItemOwnerIdCurrent(userId, LocalDateTime.now()));
+                books.addAll(bookingRepository.findByItemOwnerIdCurrent(userId, LocalDateTime.now(), pageable));
                 break;
             case "PAST":
-                books.addAll(bookingRepository.findByItemOwnerIdPast(userId, LocalDateTime.now()));
+                books.addAll(bookingRepository.findByItemOwnerIdPast(userId, LocalDateTime.now(), pageable));
                 break;
             case "FUTURE":
-                books.addAll(bookingRepository.findByItemOwnerIdFuture(userId, LocalDateTime.now()));
+                books.addAll(bookingRepository.findByItemOwnerIdFuture(userId, LocalDateTime.now(), pageable));
                 break;
             case "WAITING":
-                books.addAll(bookingRepository.findByItemOwnerIdAndStatus(userId, BookingStatus.WAITING));
+                books.addAll(bookingRepository.findByItemOwnerIdAndStatus(userId, BookingStatus.WAITING, pageable));
                 break;
             case "REJECTED":
-                books.addAll(bookingRepository.findByItemOwnerIdAndStatus(userId, BookingStatus.REJECTED));
+                books.addAll(bookingRepository.findByItemOwnerIdAndStatus(userId, BookingStatus.REJECTED, pageable));
                 break;
             default:
                 throw new UnsupportedStatusException("Unknown state: " + state);

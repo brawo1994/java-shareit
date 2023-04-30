@@ -4,7 +4,7 @@ import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingShortDto;
 import ru.practicum.shareit.booking.model.Booking;
 
-public class BookingMapper {
+public final class BookingMapper {
 
     private BookingMapper() {
         throw new IllegalStateException("Utility class");

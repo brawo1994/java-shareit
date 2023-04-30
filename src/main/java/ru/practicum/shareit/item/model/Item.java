@@ -4,8 +4,17 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.practicum.shareit.request.model.Request;
+import ru.practicum.shareit.user.model.User;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "items")
@@ -25,9 +34,14 @@ public class Item {
     @Column(nullable = false, length = 1024)
     private String description;
 
+    @ManyToOne
+    @JoinColumn(name = "request_id")
+    private Request request;
+
     @Column(nullable = false)
     private Boolean available;
 
-    @Column(name = "owner_id", nullable = false, length = 1024)
-    private long ownerId;
+    @ManyToOne
+    @JoinColumn(name = "owner_id")
+    private User owner;
 }

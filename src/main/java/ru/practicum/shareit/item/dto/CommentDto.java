@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Data;
 
@@ -11,7 +12,7 @@ import java.time.LocalDateTime;
 @Builder
 public class CommentDto {
 
-    private Long id;
+    private long id;
 
     @NotEmpty(message = "Поле text не может отсутствовать или быть пустым")
     @Size(max = 1024, message = "Значение в поле text не может быть длиннее 1024 символов")
@@ -19,5 +20,6 @@ public class CommentDto {
 
     private String authorName;
 
+    @JsonFormat
     private LocalDateTime created;
 }

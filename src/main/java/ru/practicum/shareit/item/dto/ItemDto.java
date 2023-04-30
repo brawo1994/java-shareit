@@ -12,7 +12,7 @@ import java.util.List;
 @Data
 @Builder
 public class ItemDto {
-    private Long id;
+    private long id;
 
     @NotEmpty(message = "Поле name не может отсутствовать или быть пустым")
     @Size(max = 255, message = "Значение в поле name не может быть длиннее 255 символов")
@@ -21,6 +21,8 @@ public class ItemDto {
     @NotEmpty(message = "Поле description не может отсутствовать или быть пустым")
     @Size(max = 1024, message = "Значение в поле description не может быть длиннее 1024 символов")
     private String description;
+
+    private Long requestId;
 
     @NotNull(message = "Поле available не может отсутствовать")
     private Boolean available;
