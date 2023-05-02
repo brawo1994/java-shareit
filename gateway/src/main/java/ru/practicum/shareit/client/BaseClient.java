@@ -38,7 +38,8 @@ public class BaseClient {
         return post(path, userId, null, body);
     }
 
-    protected <T> ResponseEntity<Object> post(String path, Long userId, @Nullable Map<String, Object> parameters, T body) {
+    protected <T> ResponseEntity<Object> post(String path, Long userId, @Nullable Map<String, Object>
+            parameters, T body) {
         return makeAndSendRequest(HttpMethod.POST, path, userId, parameters, body);
     }
 
@@ -46,7 +47,8 @@ public class BaseClient {
         return put(path, userId, null, body);
     }
 
-    protected <T> ResponseEntity<Object> put(String path, long userId, @Nullable Map<String, Object> parameters, T body) {
+    protected <T> ResponseEntity<Object> put(String path, long userId, @Nullable Map<String, Object>
+            parameters, T body) {
         return makeAndSendRequest(HttpMethod.PUT, path, userId, parameters, body);
     }
 
@@ -62,7 +64,8 @@ public class BaseClient {
         return patch(path, userId, null, body);
     }
 
-    protected <T> ResponseEntity<Object> patch(String path, Long userId, @Nullable Map<String, Object> parameters, T body) {
+    protected <T> ResponseEntity<Object> patch(String path, Long userId, @Nullable Map<String, Object>
+            parameters, T body) {
         return makeAndSendRequest(HttpMethod.PATCH, path, userId, parameters, body);
     }
 
@@ -78,7 +81,8 @@ public class BaseClient {
         return makeAndSendRequest(HttpMethod.DELETE, path, userId, parameters, null);
     }
 
-    private <T> ResponseEntity<Object> makeAndSendRequest(HttpMethod method, String path, Long userId, @Nullable Map<String, Object> parameters, @Nullable T body) {
+    private <T> ResponseEntity<Object> makeAndSendRequest(HttpMethod method, String path, Long userId,
+                                                          @Nullable Map<String, Object> parameters, @Nullable T body) {
         HttpEntity<T> requestEntity = new HttpEntity<>(body, defaultHeaders(userId));
 
         ResponseEntity<Object> shareitServerResponse;
@@ -94,7 +98,7 @@ public class BaseClient {
         return prepareGatewayResponse(shareitServerResponse);
     }
 
-    private HttpHeaders defaultHeaders(Long userId) {
+    private static HttpHeaders defaultHeaders(Long userId) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setAccept(List.of(MediaType.APPLICATION_JSON));

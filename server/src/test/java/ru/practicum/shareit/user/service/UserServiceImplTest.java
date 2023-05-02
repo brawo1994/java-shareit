@@ -18,7 +18,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -51,9 +50,12 @@ class UserServiceImplTest {
         when(userRepository.save(any(User.class))).thenReturn(user);
         UserDto userDto = userService.createUser(UserMapper.toDto(user));
 
-        assertEquals(user.getId(), userDto.getId());
-        assertEquals(user.getName(), userDto.getName());
-        assertEquals(user.getEmail(), userDto.getEmail());
+        AssertionErrors.assertEquals("There should have been " + user.getId(), user.getId(),
+                userDto.getId());
+        AssertionErrors.assertEquals("There should have been " + user.getName(), user.getName(),
+                userDto.getName());
+        AssertionErrors.assertEquals("There should have been " + user.getEmail(), user.getEmail(),
+                userDto.getEmail());
     }
 
 
@@ -64,9 +66,12 @@ class UserServiceImplTest {
         UserDto userDto = UserMapper.toDto(user);
         userService.updateUser(userDto.getId(), userDto);
 
-        assertEquals(user.getId(), userDto.getId());
-        assertEquals(user.getName(), userDto.getName());
-        assertEquals(user.getEmail(), userDto.getEmail());
+        AssertionErrors.assertEquals("There should have been " + user.getId(), user.getId(),
+                userDto.getId());
+        AssertionErrors.assertEquals("There should have been " + user.getName(), user.getName(),
+                userDto.getName());
+        AssertionErrors.assertEquals("There should have been " + user.getEmail(), user.getEmail(),
+                userDto.getEmail());
     }
 
     @Test
@@ -77,9 +82,12 @@ class UserServiceImplTest {
         UserDto userDto = UserMapper.toDto(user);
         userService.updateUser(userDto.getId(), userDto);
 
-        assertEquals(user.getId(), userDto.getId());
-        assertEquals(user.getName(), userDto.getName());
-        assertEquals(user.getEmail(), userDto.getEmail());
+        AssertionErrors.assertEquals("There should have been " + user.getId(), user.getId(),
+                userDto.getId());
+        AssertionErrors.assertEquals("There should have been " + user.getName(), user.getName(),
+                userDto.getName());
+        AssertionErrors.assertEquals("There should have been " + user.getEmail(), user.getEmail(),
+                userDto.getEmail());
     }
 
     @Test
@@ -90,9 +98,12 @@ class UserServiceImplTest {
         UserDto userDto = UserMapper.toDto(user);
         userService.updateUser(userDto.getId(), userDto);
 
-        assertEquals(user.getId(), userDto.getId());
-        assertEquals(user.getName(), userDto.getName());
-        assertEquals(user.getEmail(), userDto.getEmail());
+        AssertionErrors.assertEquals("There should have been " + user.getId(), user.getId(),
+                userDto.getId());
+        AssertionErrors.assertEquals("There should have been " + user.getName(), user.getName(),
+                userDto.getName());
+        AssertionErrors.assertEquals("There should have been " + user.getEmail(), user.getEmail(),
+                userDto.getEmail());
     }
 
     @Test
@@ -106,7 +117,9 @@ class UserServiceImplTest {
                 () -> userService.updateUser(user.getId(), userDto)
         );
 
-        assertEquals("Пользователь с id " + user.getId() + " не зарегистрирован в системе", exception.getMessage());
+        AssertionErrors.assertEquals("There should have been Пользователь с id "
+                        + user.getId() + " не зарегистрирован в системе",
+                "Пользователь с id " + user.getId() + " не зарегистрирован в системе", exception.getMessage());
     }
 
     @Test
@@ -128,7 +141,8 @@ class UserServiceImplTest {
                 () -> userService.deleteUser(1L)
         );
 
-        assertEquals("Пользователь с id 1 не зарегистрирован в системе", exc.getMessage());
+        AssertionErrors.assertEquals("There should have been: Пользователь с id 1 не зарегистрирован в системе",
+                "Пользователь с id 1 не зарегистрирован в системе", exc.getMessage());
     }
 
     @Test
@@ -136,9 +150,12 @@ class UserServiceImplTest {
         when(userRepository.findById(anyLong())).thenReturn(Optional.ofNullable(user));
         UserDto userDto = userService.getUserById(user.getId());
 
-        assertEquals(user.getId(), userDto.getId());
-        assertEquals(user.getName(), userDto.getName());
-        assertEquals(user.getEmail(), userDto.getEmail());
+        AssertionErrors.assertEquals("There should have been " + user.getId(), user.getId(),
+                userDto.getId());
+        AssertionErrors.assertEquals("There should have been " + user.getName(), user.getName(),
+                userDto.getName());
+        AssertionErrors.assertEquals("There should have been " + user.getEmail(), user.getEmail(),
+                userDto.getEmail());
     }
 
     @Test
@@ -147,10 +164,14 @@ class UserServiceImplTest {
                 .thenReturn(List.of(user));
         List<UserDto> userDto = userService.getAllUsers();
 
-        AssertionErrors.assertEquals("There should have been 1 User in the list", 1, userDto.size());
-        assertEquals(user.getId(), userDto.get(0).getId());
-        assertEquals(user.getName(), userDto.get(0).getName());
-        assertEquals(user.getEmail(), userDto.get(0).getEmail());
+        AssertionErrors.assertEquals("There should have been 1 User in the list", 1,
+                userDto.size());
+        AssertionErrors.assertEquals("There should have been " + user.getId(), user.getId(),
+                userDto.get(0).getId());
+        AssertionErrors.assertEquals("There should have been " + user.getName(), user.getName(),
+                userDto.get(0).getName());
+        AssertionErrors.assertEquals("There should have been " + user.getEmail(), user.getEmail(),
+                userDto.get(0).getEmail());
     }
 
     @Test

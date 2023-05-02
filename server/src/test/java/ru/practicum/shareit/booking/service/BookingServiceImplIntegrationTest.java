@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.util.AssertionErrors;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
@@ -15,7 +16,6 @@ import ru.practicum.shareit.user.service.UserService;
 
 import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static ru.practicum.shareit.booking.model.enums.BookingStatus.APPROVED;
 
 @SpringBootTest
@@ -56,10 +56,14 @@ class BookingServiceImplIntegrationTest {
                 .build();
         BookingDto resultBookingDto = bookingService.createBooking(resultBookerDto.getId(), bookingDto);
 
-        BookingDto resultBookingDtoFinal = bookingService.approvedBooking(resultOwnerDto.getId(), resultBookingDto.getId(), true);
+        BookingDto resultBookingDtoFinal = bookingService.approvedBooking(resultOwnerDto.getId(),
+                resultBookingDto.getId(), true);
 
-        assertEquals(resultItemDto, ItemMapper.toDto(resultBookingDtoFinal.getItem()));
-        assertEquals(resultBookerDto, UserMapper.toDto(resultBookingDtoFinal.getBooker()));
-        assertEquals(APPROVED, resultBookingDtoFinal.getStatus());
+        AssertionErrors.assertEquals("There should have been " + resultItemDto,
+                resultItemDto, ItemMapper.toDto(resultBookingDtoFinal.getItem()));
+        AssertionErrors.assertEquals("There should have been " + resultBookerDto,
+                resultBookerDto, UserMapper.toDto(resultBookingDtoFinal.getBooker()));
+        AssertionErrors.assertEquals("There should have been " + APPROVED,
+                APPROVED, resultBookingDtoFinal.getStatus());
     }
 }

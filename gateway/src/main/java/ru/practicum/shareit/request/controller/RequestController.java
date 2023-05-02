@@ -43,8 +43,10 @@ public class RequestController {
 
     @GetMapping("/all")
     public ResponseEntity<Object> getAllRequestList(@RequestHeader(SHARER_USER_ID_HEADER) long userId,
-                                              @PositiveOrZero @RequestParam(defaultValue = "0", required = false) Integer from,
-                                              @Positive @RequestParam(defaultValue = "10", required = false) Integer size) {
+                                              @PositiveOrZero @RequestParam(defaultValue = "0", required = false)
+                                                  Integer from,
+                                              @Positive @RequestParam(defaultValue = "10", required = false)
+                                                  Integer size) {
         log.info("Get requests where owner not current user from userId={}", userId);
         return requestClient.getAllRequestList(userId, from, size);
     }

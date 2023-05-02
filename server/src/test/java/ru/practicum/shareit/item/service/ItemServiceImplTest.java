@@ -35,7 +35,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -113,7 +112,8 @@ class ItemServiceImplTest {
         when(requestRepository.findById(anyLong())).thenReturn(Optional.ofNullable(request));
         ItemDto itemDto = itemService.createItem(user.getId(), ItemMapper.toDto(item));
 
-        assertEquals(item.getId(), itemDto.getId());
+        AssertionErrors.assertEquals("There should have been " + item.getId(),
+                item.getId(), itemDto.getId());
     }
 
     @Test
@@ -126,7 +126,9 @@ class ItemServiceImplTest {
                 () -> itemService.createItem(user.getId(), ItemMapper.toDto(item))
         );
 
-        assertEquals("Запрос с id " + request.getId() + " не существует в системе", exception.getMessage());
+        AssertionErrors.assertEquals("There should have been: Запрос с id "
+                        + request.getId() + " не существует в системе",
+                "Запрос с id " + request.getId() + " не существует в системе", exception.getMessage());
     }
 
     @Test
@@ -136,7 +138,8 @@ class ItemServiceImplTest {
         when(itemRepository.save(any(Item.class))).thenReturn(item);
         ItemDto itemDto = itemService.updateItem(user.getId(), item.getId(), ItemMapper.toDto(item));
 
-        assertEquals(item.getId(), itemDto.getId());
+        AssertionErrors.assertEquals("There should have been " + item.getId(),
+                item.getId(), itemDto.getId());
     }
 
     @Test
@@ -148,7 +151,8 @@ class ItemServiceImplTest {
         when(itemRepository.save(any(Item.class))).thenReturn(item);
         ItemDto itemDto = itemService.updateItem(user.getId(), item.getId(), ItemMapper.toDto(item));
 
-        assertEquals(item.getId(), itemDto.getId());
+        AssertionErrors.assertEquals("There should have been " + item.getId(),
+                item.getId(), itemDto.getId());
     }
 
     @Test
@@ -159,7 +163,8 @@ class ItemServiceImplTest {
         when(itemRepository.save(any(Item.class))).thenReturn(item);
         ItemDto itemDto = itemService.updateItem(user.getId(), item.getId(), ItemMapper.toDto(item));
 
-        assertEquals(item.getId(), itemDto.getId());
+        AssertionErrors.assertEquals("There should have been " + item.getId(),
+                item.getId(), itemDto.getId());
     }
 
     @Test
@@ -172,7 +177,9 @@ class ItemServiceImplTest {
                 () -> itemService.updateItem(10L, item.getId(), ItemMapper.toDto(item))
         );
 
-        assertEquals("Вещь с id " + item.getId() + " не найдена у пользователя с id 10", exception.getMessage());
+        AssertionErrors.assertEquals("There should have been Вещь с id "
+                        + item.getId() + " не найдена у пользователя с id 10",
+                "Вещь с id " + item.getId() + " не найдена у пользователя с id 10", exception.getMessage());
     }
 
     @Test
@@ -185,7 +192,8 @@ class ItemServiceImplTest {
                 () -> itemService.updateItem(user.getId(), item.getId(), ItemMapper.toDto(item))
         );
 
-        assertEquals("Вещь с id " + item.getId() + " не существует в системе", exception.getMessage());
+        AssertionErrors.assertEquals("There should have been Вещь с id " + item.getId() + " не существует в системе",
+                "Вещь с id " + item.getId() + " не существует в системе", exception.getMessage());
     }
 
     @Test
@@ -208,9 +216,12 @@ class ItemServiceImplTest {
         when(bookingRepository.findLastBooking(anyLong(), any())).thenReturn(List.of(booking));
         ItemDto itemDto = itemService.getItemById(item.getId(), user.getId());
 
-        assertEquals(item.getId(), itemDto.getId());
-        assertEquals(bookingShortDto, itemDto.getLastBooking());
-        assertEquals(bookingShortDto, itemDto.getNextBooking());
+        AssertionErrors.assertEquals("There should have been " + item.getId(),
+                item.getId(), itemDto.getId());
+        AssertionErrors.assertEquals("There should have been " + bookingShortDto,
+                bookingShortDto, itemDto.getLastBooking());
+        AssertionErrors.assertEquals("There should have been " + bookingShortDto,
+                bookingShortDto, itemDto.getNextBooking());
     }
 
     @Test
@@ -222,9 +233,12 @@ class ItemServiceImplTest {
         List<ItemDto> itemDtoList = itemService.getItemsByUserId(user.getId(), new Pagination(0, 10, Sort.unsorted()));
 
         AssertionErrors.assertEquals("There should have been 1 Item in the list", 1, itemDtoList.size());
-        assertEquals(item.getId(), itemDtoList.get(0).getId());
-        assertEquals(bookingShortDto, itemDtoList.get(0).getLastBooking());
-        assertEquals(bookingShortDto, itemDtoList.get(0).getNextBooking());
+        AssertionErrors.assertEquals("There should have been " + item.getId(),
+                item.getId(), itemDtoList.get(0).getId());
+        AssertionErrors.assertEquals("There should have been " + bookingShortDto,
+                bookingShortDto, itemDtoList.get(0).getLastBooking());
+        AssertionErrors.assertEquals("There should have been " + bookingShortDto,
+                bookingShortDto, itemDtoList.get(0).getNextBooking());
     }
 
     @Test
@@ -233,7 +247,8 @@ class ItemServiceImplTest {
         List<ItemDto> itemDtoList = itemService.searchItemsByText("text", new Pagination(0, 10, Sort.unsorted()));
 
         AssertionErrors.assertEquals("There should have been 1 Item in the list", 1, itemDtoList.size());
-        assertEquals(item.getId(), itemDtoList.get(0).getId());
+        AssertionErrors.assertEquals("There should have been " + item.getId(),
+                item.getId(), itemDtoList.get(0).getId());
     }
 
     @Test
@@ -257,7 +272,8 @@ class ItemServiceImplTest {
         when(commentRepository.save(any(Comment.class))).thenReturn(comment);
         CommentDto commentDto = itemService.createComment(user.getId(), item.getId(), CommentMapper.toDto(comment));
 
-        assertEquals(comment.getId(), commentDto.getId());
+        AssertionErrors.assertEquals("There should have been " + comment.getId(),
+                comment.getId(), commentDto.getId());
     }
 
     @Test
@@ -270,13 +286,15 @@ class ItemServiceImplTest {
                 .build();
         when(userService.getUserIfExistOrThrow(anyLong())).thenReturn(user);
         when(itemRepository.findById(anyLong())).thenReturn(Optional.ofNullable(item));
-        when(bookingRepository.findAllByBookerIdAndItemId(anyLong(), anyLong(), any())).thenReturn(Collections.emptyList());
+        when(bookingRepository.findAllByBookerIdAndItemId(anyLong(), anyLong(),
+                any())).thenReturn(Collections.emptyList());
 
         BadRequestException exception = assertThrows(
                 BadRequestException.class,
                 () -> itemService.createComment(user.getId(), item.getId(), CommentMapper.toDto(comment))
         );
 
-        assertEquals("У вас нет ни одного завершенного бронирования", exception.getMessage());
+        AssertionErrors.assertEquals("There should have been У вас нет ни одного завершенного бронирования",
+                "У вас нет ни одного завершенного бронирования", exception.getMessage());
     }
 }

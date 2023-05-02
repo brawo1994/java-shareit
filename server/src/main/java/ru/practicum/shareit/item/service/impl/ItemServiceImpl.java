@@ -43,8 +43,9 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto createItem(long userId, ItemDto itemDto) {
         User user = userService.getUserIfExistOrThrow(userId);
         Item item = ItemMapper.toModel(itemDto);
-        if (itemDto.getRequestId() != null)
+        if (itemDto.getRequestId() != null) {
             item.setRequest(getRequestIfExistOrThrow(itemDto.getRequestId()));
+        }
         item.setOwner(user);
         item = itemRepository.save(item);
         log.info("Item with id: {} added to DB", item.getId());
@@ -96,8 +97,9 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> searchItemsByText(String text, Pageable pageable) {
-        if (text.isEmpty())
+        if (text.isEmpty()) {
             return List.of();
+        }
         return itemRepository.findItemsByText(text.toLowerCase(), pageable).stream()
                 .map(ItemMapper::toDto)
                 .collect(Collectors.toList());
@@ -115,8 +117,9 @@ public class ItemServiceImpl implements ItemService {
         User user = userService.getUserIfExistOrThrow(userId);
         Item item = getItemIfExistOrThrow(itemId);
         List<Booking> bookings = bookingRepository.findAllByBookerIdAndItemId(userId, itemId, LocalDateTime.now());
-        if (bookings.isEmpty())
+        if (bookings.isEmpty()) {
             throw new BadRequestException("У вас нет ни одного завершенного бронирования");
+        }
         Comment comment = CommentMapper.toModel(commentDto);
         comment.setAuthor(user);
         comment.setItem(item);
@@ -127,29 +130,35 @@ public class ItemServiceImpl implements ItemService {
     private Item createItemToUpdate(long id, ItemDto itemDto) {
         Item itemToUpdate = ItemMapper.toModel(itemDto);
         Item oldItem = getItemIfExistOrThrow(id);
-        if (itemToUpdate.getName() == null)
+        if (itemToUpdate.getName() == null) {
             itemToUpdate.setName(oldItem.getName());
-        if (itemToUpdate.getDescription() == null)
+        }
+        if (itemToUpdate.getDescription() == null) {
             itemToUpdate.setDescription(oldItem.getDescription());
-        if (itemToUpdate.getAvailable() == null)
+        }
+        if (itemToUpdate.getAvailable() == null) {
             itemToUpdate.setAvailable(oldItem.getAvailable());
+        }
         itemToUpdate.setId(id);
         itemToUpdate.setOwner(oldItem.getOwner());
         return itemToUpdate;
     }
 
     private void throwIfItemNotOwnedUser(long itemId, long userId) {
-        if (getItemIfExistOrThrow(itemId).getOwner().getId() != userId)
+        if (getItemIfExistOrThrow(itemId).getOwner().getId() != userId) {
             throw new NotFoundException("Вещь с id " + itemId + " не найдена у пользователя с id " + userId);
+        }
     }
 
     private void addBookingToItemDto(ItemDto itemDto) {
         List<Booking> nextBookingList = bookingRepository.findNextBooking(itemDto.getId(), LocalDateTime.now());
-        if (!nextBookingList.isEmpty())
+        if (!nextBookingList.isEmpty()) {
             itemDto.setNextBooking(BookingMapper.toShortDto(nextBookingList.get(0)));
+        }
         List<Booking> lastBookingList = bookingRepository.findLastBooking(itemDto.getId(), LocalDateTime.now());
-        if (!lastBookingList.isEmpty())
+        if (!lastBookingList.isEmpty()) {
             itemDto.setLastBooking(BookingMapper.toShortDto(lastBookingList.get(0)));
+        }
     }
 
     private void addCommentsToItemDto(ItemDto itemDto) {

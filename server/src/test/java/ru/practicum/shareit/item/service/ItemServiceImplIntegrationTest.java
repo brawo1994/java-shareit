@@ -15,8 +15,6 @@ import ru.practicum.shareit.util.Pagination;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 @SpringBootTest
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
@@ -46,6 +44,7 @@ class ItemServiceImplIntegrationTest {
         List<ItemDto> itemDtoList = itemService.searchItemsByText("Petr", pageable);
 
         AssertionErrors.assertEquals("There should have been 1 Item in the list", 1, itemDtoList.size());
-        assertEquals(resultItemDto, itemDtoList.get(0));
+        AssertionErrors.assertEquals("There should have been " + resultItemDto,
+                resultItemDto, itemDtoList.get(0));
     }
 }

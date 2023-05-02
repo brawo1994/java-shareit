@@ -67,10 +67,11 @@ public class BookingServiceImpl implements BookingService {
         if (booking.getStatus() == BookingStatus.APPROVED) {
             throw new BadRequestException("Бронирование уже подтверждено");
         }
-        if (approved)
+        if (approved) {
             booking.setStatus(BookingStatus.APPROVED);
-        else
+        } else {
             booking.setStatus(BookingStatus.REJECTED);
+        }
         booking = bookingRepository.save(booking);
         log.info("Changed status for booking with id: {} to: {} in DB", booking.getId(), booking.getStatus());
         return BookingMapper.toDto(bookingRepository.save(booking));
@@ -81,7 +82,9 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = getBookingIfExistOrThrow(bookingId);
         if (booking.getBooker().getId() == userId || booking.getItem().getOwner().getId() == userId) {
             return BookingMapper.toDto(booking);
-        } else throw new NotFoundException("Вы не являетесь владельцем бронирования или вещи");
+        } else {
+            throw new NotFoundException("Вы не являетесь владельцем бронирования или вещи");
+        }
     }
 
     @Override

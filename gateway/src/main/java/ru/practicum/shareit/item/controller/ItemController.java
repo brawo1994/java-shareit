@@ -59,9 +59,11 @@ public class ItemController {
     }
 
     @GetMapping
-    public ResponseEntity<Object> getItemsByUserId(@RequestHeader(SHARER_USER_ID_HEADER) long userId,
-                                          @PositiveOrZero @RequestParam(defaultValue = "0", required = false) Integer from,
-                                          @Positive @RequestParam(defaultValue = "10", required = false) Integer size) {
+    public ResponseEntity<Object> getItemsByUserId(@RequestHeader(SHARER_USER_ID_HEADER)long userId,
+                                          @PositiveOrZero @RequestParam(defaultValue = "0", required = false)
+                                              Integer from,
+                                          @Positive @RequestParam(defaultValue = "10", required = false)
+                                              Integer size) {
         log.info("Get items from owner with id: {}", userId);
         return itemClient.getItemsByUserId(userId, from, size);
     }

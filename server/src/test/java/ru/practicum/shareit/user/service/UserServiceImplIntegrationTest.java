@@ -5,9 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.util.AssertionErrors;
 import ru.practicum.shareit.user.dto.UserDto;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @AutoConfigureTestDatabase
@@ -25,7 +24,9 @@ class UserServiceImplIntegrationTest {
 
         UserDto result1 = userService.createUser(userDto);
 
-        assertEquals(userDto.getEmail(), result1.getEmail());
-        assertEquals(userDto.getName(), result1.getName());
+        AssertionErrors.assertEquals("There should have been " + userDto.getName(), result1.getName(),
+                userDto.getName());
+        AssertionErrors.assertEquals("There should have been " + userDto.getEmail(), result1.getEmail(),
+                userDto.getEmail());
     }
 }

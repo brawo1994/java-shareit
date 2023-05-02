@@ -61,10 +61,14 @@ public class BookingController {
 
     @GetMapping("/owner")
     public List<BookingDto> getBookingsByItemsOwnerId(@RequestHeader(SHARER_USER_ID_HEADER) long userId,
-                                                      @RequestParam(defaultValue = "ALL", required = false) String state,
-                                                      @RequestParam(defaultValue = "0", required = false) Integer from,
-                                                      @RequestParam(defaultValue = "10", required = false) Integer size) {
+                                                      @RequestParam(defaultValue = "ALL", required = false)
+                                                          String state,
+                                                      @RequestParam(defaultValue = "0", required = false)
+                                                          Integer from,
+                                                      @RequestParam(defaultValue = "10", required = false)
+                                                          Integer size) {
         log.info("Request received to get the bookings for owner with id: {}", userId);
-        return bookingService.getBookingsByItemsOwnerId(userId, state, new Pagination(from, size, Sort.by(DESC, "start")));
+        return bookingService.getBookingsByItemsOwnerId(userId, state,
+                new Pagination(from, size, Sort.by(DESC, "start")));
     }
 }

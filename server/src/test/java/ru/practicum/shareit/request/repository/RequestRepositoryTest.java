@@ -15,7 +15,6 @@ import ru.practicum.shareit.util.Pagination;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @DataJpaTest
@@ -54,6 +53,6 @@ class RequestRepositoryTest {
                 .findAllWhereOwnerNotCurrentUserByPageable(99999, pageable);
 
         AssertionErrors.assertEquals("There should have been 1 Request in the list", 1, requestList.size());
-        assertEquals(List.of(request), requestList);
+        AssertionErrors.assertEquals("There should have been " + List.of(request), List.of(request), requestList);
     }
 }

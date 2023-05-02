@@ -12,8 +12,6 @@ import ru.practicum.shareit.user.service.UserService;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 @SpringBootTest
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
@@ -44,7 +42,9 @@ class RequestServiceImplIntegrationTest {
         List<RequestDto> requestDtoList = requestService.getRequestListByOwnerId(resultUserDto.getId());
 
         AssertionErrors.assertEquals("There should have been 2 Request in the list", 2, requestDtoList.size());
-        assertEquals(resultRequestDto, requestDtoList.get(0));
-        assertEquals(resultRequestDto2, requestDtoList.get(1));
+        AssertionErrors.assertEquals("There should have been " + resultRequestDto,
+                resultRequestDto, requestDtoList.get(0));
+        AssertionErrors.assertEquals("There should have been " + resultRequestDto2,
+                resultRequestDto2, requestDtoList.get(1));
     }
 }

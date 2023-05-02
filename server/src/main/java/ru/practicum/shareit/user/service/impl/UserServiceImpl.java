@@ -69,8 +69,9 @@ public class UserServiceImpl implements UserService {
         if (userToUpdate.getEmail() == null) {
             userToUpdate.setEmail(oldUser.getEmail());
         }
-        if (userToUpdate.getName() == null)
+        if (userToUpdate.getName() == null) {
             userToUpdate.setName(oldUser.getName());
+        }
         userToUpdate.setId(userId);
         return userToUpdate;
     }

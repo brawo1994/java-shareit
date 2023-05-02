@@ -6,6 +6,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class ErrorResponseDto {
-    String error;
-    String description;
+    private String error;
+    private String description;
 }

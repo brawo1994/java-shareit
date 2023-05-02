@@ -45,7 +45,8 @@ public class RequestController {
                                               @RequestParam(defaultValue = "0", required = false) Integer from,
                                               @RequestParam(defaultValue = "10", required = false) Integer size) {
         log.info("Request received to get requests where owner not current user from user with id: {}", userId);
-        return requestService.getAllRequestList(userId, new Pagination(from, size, Sort.by(Sort.Direction.DESC, "created")));
+        return requestService.getAllRequestList(userId, new Pagination(from, size,
+                Sort.by(Sort.Direction.DESC, "created")));
     }
 
     @GetMapping("/{requestId}")

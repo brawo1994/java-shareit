@@ -28,7 +28,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -90,7 +89,7 @@ class BookingServiceImplTest {
         when(bookingRepository.save(any(Booking.class))).thenReturn(booking);
         BookingDto bookingDto = bookingService.createBooking(2L, BookingMapper.toDto(booking));
 
-        assertEquals(booking.getId(), bookingDto.getId());
+        AssertionErrors.assertEquals("There should have been " + booking.getId(), booking.getId(), bookingDto.getId());
     }
 
     @Test
@@ -103,7 +102,8 @@ class BookingServiceImplTest {
                 () -> bookingService.createBooking(user.getId(), BookingMapper.toDto(booking))
         );
 
-        assertEquals("Владелец не может забронировать свою вещь", exception.getMessage());
+        AssertionErrors.assertEquals("There should have been: Владелец не может забронировать свою вещь",
+                "Владелец не может забронировать свою вещь", exception.getMessage());
     }
 
     @Test
@@ -117,7 +117,8 @@ class BookingServiceImplTest {
                 () -> bookingService.createBooking(2L, BookingMapper.toDto(booking))
         );
 
-        assertEquals("Вещь не доступна для заказа", exception.getMessage());
+        AssertionErrors.assertEquals("There should have been: Вещь не доступна для заказа",
+                "Вещь не доступна для заказа", exception.getMessage());
     }
 
     @Test
@@ -132,7 +133,9 @@ class BookingServiceImplTest {
                 () -> bookingService.createBooking(2L, BookingMapper.toDto(booking))
         );
 
-        assertEquals("Дата окончания бронирования не может быть раньше даты начала бронирования", exception.getMessage());
+        AssertionErrors.assertEquals("There should have been: Дата окончания бронирования не может быть раньше " +
+                        "даты начала бронирования",
+                "Дата окончания бронирования не может быть раньше даты начала бронирования", exception.getMessage());
     }
 
     @Test
@@ -147,7 +150,9 @@ class BookingServiceImplTest {
                 () -> bookingService.createBooking(2L, BookingMapper.toDto(booking))
         );
 
-        assertEquals("Дата окончания бронирования не может совпадать с датой начала бронирования", exception.getMessage());
+        AssertionErrors.assertEquals("There should have been: Дата окончания бронирования не может совпадать " +
+                        "с датой начала бронирования",
+                "Дата окончания бронирования не может совпадать с датой начала бронирования", exception.getMessage());
     }
 
 
@@ -157,7 +162,8 @@ class BookingServiceImplTest {
         when(bookingRepository.save(any(Booking.class))).thenReturn(booking);
         BookingDto bookingDto = bookingService.approvedBooking(user.getId(), booking.getId(), true);
 
-        assertEquals(booking.getId(), bookingDto.getId());
+        AssertionErrors.assertEquals("There should have been " + booking.getId(),
+                booking.getId(), bookingDto.getId());
     }
 
     @Test
@@ -166,7 +172,8 @@ class BookingServiceImplTest {
         when(bookingRepository.save(any(Booking.class))).thenReturn(booking);
         BookingDto bookingDto = bookingService.approvedBooking(user.getId(), booking.getId(), false);
 
-        assertEquals(booking.getId(), bookingDto.getId());
+        AssertionErrors.assertEquals("There should have been " + booking.getId(),
+                booking.getId(), bookingDto.getId());
     }
 
     @Test
@@ -178,7 +185,8 @@ class BookingServiceImplTest {
                 () -> bookingService.approvedBooking(2L, booking.getId(), true)
         );
 
-        assertEquals("У вас нет вещи с id " + booking.getItem().getId(), exception.getMessage());
+        AssertionErrors.assertEquals("There should have been У вас нет вещи с id " + booking.getItem().getId(),
+                "У вас нет вещи с id " + booking.getItem().getId(), exception.getMessage());
     }
 
     @Test
@@ -191,7 +199,8 @@ class BookingServiceImplTest {
                 () -> bookingService.approvedBooking(user.getId(), booking.getId(), true)
         );
 
-        assertEquals("Бронирование уже подтверждено", exception.getMessage());
+        AssertionErrors.assertEquals("There should have been: Бронирование уже подтверждено",
+                "Бронирование уже подтверждено", exception.getMessage());
     }
 
     @Test
@@ -199,7 +208,8 @@ class BookingServiceImplTest {
         when(bookingRepository.findById(anyLong())).thenReturn(Optional.ofNullable(booking));
         BookingDto bookingDto = bookingService.getBookingById(user.getId(), booking.getId());
 
-        assertEquals(booking.getId(), bookingDto.getId());
+        AssertionErrors.assertEquals("There should have been " + booking.getId(),
+                booking.getId(), bookingDto.getId());
     }
 
     @Test
@@ -211,7 +221,9 @@ class BookingServiceImplTest {
                 () -> bookingService.getBookingById(user.getId(), booking.getId())
         );
 
-        assertEquals("Бронирования с id " + booking.getId() + " не существует в системе", exception.getMessage());
+        AssertionErrors.assertEquals("There should have been Бронирования с id "
+                        + booking.getId() + " не существует в системе",
+                "Бронирования с id " + booking.getId() + " не существует в системе", exception.getMessage());
     }
 
     @Test
@@ -223,7 +235,8 @@ class BookingServiceImplTest {
                 () -> bookingService.getBookingById(2L, booking.getId())
         );
 
-        assertEquals("Вы не являетесь владельцем бронирования или вещи", exception.getMessage());
+        AssertionErrors.assertEquals("There should have been Вы не являетесь владельцем бронирования или вещи",
+                "Вы не являетесь владельцем бронирования или вещи", exception.getMessage());
     }
 
     @Test
@@ -234,7 +247,8 @@ class BookingServiceImplTest {
         List<BookingDto> bookingDtoList = bookingService.getBookingsByBookerId(user.getId(), "ALL", pagination);
 
         AssertionErrors.assertEquals("There should have been 1 Booking in the list", 1, bookingDtoList.size());
-        assertEquals(booking.getId(), bookingDtoList.get(0).getId());
+        AssertionErrors.assertEquals("There should have been " + booking.getId(),
+                booking.getId(), bookingDtoList.get(0).getId());
     }
 
     @Test
@@ -245,7 +259,8 @@ class BookingServiceImplTest {
         List<BookingDto> bookingDtoList = bookingService.getBookingsByBookerId(user.getId(), "CURRENT", pagination);
 
         AssertionErrors.assertEquals("There should have been 1 Booking in the list", 1, bookingDtoList.size());
-        assertEquals(booking.getId(), bookingDtoList.get(0).getId());
+        AssertionErrors.assertEquals("There should have been " + booking.getId(),
+                booking.getId(), bookingDtoList.get(0).getId());
     }
 
     @Test
@@ -256,7 +271,8 @@ class BookingServiceImplTest {
         List<BookingDto> bookingDtoList = bookingService.getBookingsByBookerId(user.getId(), "PAST", pagination);
 
         AssertionErrors.assertEquals("There should have been 1 Booking in the list", 1, bookingDtoList.size());
-        assertEquals(booking.getId(), bookingDtoList.get(0).getId());
+        AssertionErrors.assertEquals("There should have been " + booking.getId(),
+                booking.getId(), bookingDtoList.get(0).getId());
     }
 
     @Test
@@ -267,7 +283,8 @@ class BookingServiceImplTest {
         List<BookingDto> bookingDtoList = bookingService.getBookingsByBookerId(user.getId(), "FUTURE", pagination);
 
         AssertionErrors.assertEquals("There should have been 1 Booking in the list", 1, bookingDtoList.size());
-        assertEquals(booking.getId(), bookingDtoList.get(0).getId());
+        AssertionErrors.assertEquals("There should have been " + booking.getId(),
+                booking.getId(), bookingDtoList.get(0).getId());
     }
 
     @Test
@@ -278,7 +295,8 @@ class BookingServiceImplTest {
         List<BookingDto> bookingDtoList = bookingService.getBookingsByBookerId(user.getId(), "WAITING", pagination);
 
         AssertionErrors.assertEquals("There should have been 1 Booking in the list", 1, bookingDtoList.size());
-        assertEquals(booking.getId(), bookingDtoList.get(0).getId());
+        AssertionErrors.assertEquals("There should have been " + booking.getId(),
+                booking.getId(), bookingDtoList.get(0).getId());
     }
 
     @Test
@@ -289,7 +307,8 @@ class BookingServiceImplTest {
         List<BookingDto> bookingDtoList = bookingService.getBookingsByBookerId(user.getId(), "REJECTED", pagination);
 
         AssertionErrors.assertEquals("There should have been 1 Booking in the list", 1, bookingDtoList.size());
-        assertEquals(booking.getId(), bookingDtoList.get(0).getId());
+        AssertionErrors.assertEquals("There should have been " + booking.getId(),
+                booking.getId(), bookingDtoList.get(0).getId());
     }
 
     @Test
@@ -301,7 +320,8 @@ class BookingServiceImplTest {
                 () -> bookingService.getBookingsByBookerId(user.getId(), "ANY", pagination)
         );
 
-        assertEquals("Unknown state: ANY", exception.getMessage());
+        AssertionErrors.assertEquals("There should have been Unknown state: ANY",
+                "Unknown state: ANY", exception.getMessage());
     }
 
     @Test
@@ -312,7 +332,8 @@ class BookingServiceImplTest {
         List<BookingDto> bookingDtoList = bookingService.getBookingsByItemsOwnerId(user.getId(), "ALL", pagination);
 
         AssertionErrors.assertEquals("There should have been 1 Booking in the list", 1, bookingDtoList.size());
-        assertEquals(booking.getId(), bookingDtoList.get(0).getId());
+        AssertionErrors.assertEquals("There should have been " + booking.getId(),
+                booking.getId(), bookingDtoList.get(0).getId());
     }
 
     @Test
@@ -323,7 +344,8 @@ class BookingServiceImplTest {
         List<BookingDto> bookingDtoList = bookingService.getBookingsByItemsOwnerId(user.getId(), "CURRENT", pagination);
 
         AssertionErrors.assertEquals("There should have been 1 Booking in the list", 1, bookingDtoList.size());
-        assertEquals(booking.getId(), bookingDtoList.get(0).getId());
+        AssertionErrors.assertEquals("There should have been " + booking.getId(),
+                booking.getId(), bookingDtoList.get(0).getId());
     }
 
     @Test
@@ -334,7 +356,8 @@ class BookingServiceImplTest {
         List<BookingDto> bookingDtoList = bookingService.getBookingsByItemsOwnerId(user.getId(), "PAST", pagination);
 
         AssertionErrors.assertEquals("There should have been 1 Booking in the list", 1, bookingDtoList.size());
-        assertEquals(booking.getId(), bookingDtoList.get(0).getId());
+        AssertionErrors.assertEquals("There should have been " + booking.getId(),
+                booking.getId(), bookingDtoList.get(0).getId());
     }
 
     @Test
@@ -345,7 +368,8 @@ class BookingServiceImplTest {
         List<BookingDto> bookingDtoList = bookingService.getBookingsByItemsOwnerId(user.getId(), "FUTURE", pagination);
 
         AssertionErrors.assertEquals("There should have been 1 Booking in the list", 1, bookingDtoList.size());
-        assertEquals(booking.getId(), bookingDtoList.get(0).getId());
+        AssertionErrors.assertEquals("There should have been " + booking.getId(),
+                booking.getId(), bookingDtoList.get(0).getId());
     }
 
     @Test
@@ -356,7 +380,8 @@ class BookingServiceImplTest {
         List<BookingDto> bookingDtoList = bookingService.getBookingsByItemsOwnerId(user.getId(), "WAITING", pagination);
 
         AssertionErrors.assertEquals("There should have been 1 Booking in the list", 1, bookingDtoList.size());
-        assertEquals(booking.getId(), bookingDtoList.get(0).getId());
+        AssertionErrors.assertEquals("There should have been " + booking.getId(),
+                booking.getId(), bookingDtoList.get(0).getId());
     }
 
     @Test
@@ -364,10 +389,12 @@ class BookingServiceImplTest {
         when(userService.getUserIfExistOrThrow(anyLong())).thenReturn(user);
         when(bookingRepository.findByItemOwnerIdAndStatus(anyLong(), any(), any(Pageable.class)))
                 .thenReturn(List.of(booking));
-        List<BookingDto> bookingDtoList = bookingService.getBookingsByItemsOwnerId(user.getId(), "REJECTED", pagination);
+        List<BookingDto> bookingDtoList = bookingService.getBookingsByItemsOwnerId(user.getId(),
+                "REJECTED", pagination);
 
         AssertionErrors.assertEquals("There should have been 1 Booking in the list", 1, bookingDtoList.size());
-        assertEquals(booking.getId(), bookingDtoList.get(0).getId());
+        AssertionErrors.assertEquals("There should have been " + booking.getId(),
+                booking.getId(), bookingDtoList.get(0).getId());
     }
 
     @Test
@@ -379,6 +406,7 @@ class BookingServiceImplTest {
                 () -> bookingService.getBookingsByItemsOwnerId(user.getId(), "ANY", pagination)
         );
 
-        assertEquals("Unknown state: ANY", exception.getMessage());
+        AssertionErrors.assertEquals("There should have been Unknown state: ANY",
+                "Unknown state: ANY", exception.getMessage());
     }
 }

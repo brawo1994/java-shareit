@@ -25,7 +25,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -82,7 +81,8 @@ class RequestServiceImplTest {
         when(requestRepository.save(any(Request.class))).thenReturn(request);
         RequestDto requestDto = requestService.createRequest(user.getId(), RequestMapper.toDto(request));
 
-        assertEquals(request.getId(), requestDto.getId());
+        AssertionErrors.assertEquals("There should have been " + request.getId(),
+                request.getId(), requestDto.getId());
     }
 
     @Test
@@ -92,8 +92,10 @@ class RequestServiceImplTest {
         when(itemRepository.findAllByRequestOwnerId(anyLong())).thenReturn(List.of(item));
         List<RequestDto> requestDtoList = requestService.getRequestListByOwnerId(user.getId());
 
-        assertEquals(request.getId(), requestDtoList.get(0).getId());
-        assertEquals(item.getId(), requestDtoList.get(0).getItems().get(0).getId());
+        AssertionErrors.assertEquals("There should have been " + request.getId(),
+                request.getId(), requestDtoList.get(0).getId());
+        AssertionErrors.assertEquals("There should have been " + item.getId(),
+                item.getId(), requestDtoList.get(0).getItems().get(0).getId());
     }
 
     @Test
@@ -102,11 +104,14 @@ class RequestServiceImplTest {
         when(requestRepository.findAllWhereOwnerNotCurrentUserByPageable(anyLong(), any(Pageable.class)))
                 .thenReturn(List.of(request));
         when(itemRepository.findAllByRequestIds(anyList())).thenReturn(List.of(item));
-        List<RequestDto> requestDtoList = requestService.getAllRequestList(user.getId(), new Pagination(0, 10, Sort.unsorted()));
+        List<RequestDto> requestDtoList = requestService.getAllRequestList(user.getId(),
+                new Pagination(0, 10, Sort.unsorted()));
 
         AssertionErrors.assertEquals("There should have been 1 Request in the list", 1, requestDtoList.size());
-        assertEquals(request.getId(), requestDtoList.get(0).getId());
-        assertEquals(item.getId(), requestDtoList.get(0).getItems().get(0).getId());
+        AssertionErrors.assertEquals("There should have been " + request.getId(),
+                request.getId(), requestDtoList.get(0).getId());
+        AssertionErrors.assertEquals("There should have been " + item.getId(),
+                item.getId(), requestDtoList.get(0).getItems().get(0).getId());
     }
 
 
@@ -117,8 +122,10 @@ class RequestServiceImplTest {
         when(requestRepository.findById(anyLong())).thenReturn(Optional.ofNullable(request));
         RequestDto requestDto = requestService.getRequestById(user.getId(), request.getId());
 
-        assertEquals(request.getId(), requestDto.getId());
-        assertEquals(item.getId(), requestDto.getItems().get(0).getId());
+        AssertionErrors.assertEquals("There should have been " + request.getId(),
+                request.getId(), requestDto.getId());
+        AssertionErrors.assertEquals("There should have been " + item.getId(),
+                item.getId(), requestDto.getItems().get(0).getId());
     }
 
     @Test
@@ -131,6 +138,8 @@ class RequestServiceImplTest {
                 () -> requestService.getRequestById(user.getId(), request.getId())
         );
 
-        assertEquals("Запрос с id " + request.getId() + " не существует в системе", exception.getMessage());
+        AssertionErrors.assertEquals("There should have been: Запрос с id "
+                        + request.getId() + " не существует в системе",
+                "Запрос с id " + request.getId() + " не существует в системе", exception.getMessage());
     }
 }

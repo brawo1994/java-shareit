@@ -48,6 +48,7 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponseDto handleMethodArgumentNotValid(final MethodArgumentNotValidException exception) {
-        return new ErrorResponseDto("BAD REQUEST", Objects.requireNonNull(exception.getFieldError()).getDefaultMessage());
+        return new ErrorResponseDto("BAD REQUEST",
+                Objects.requireNonNull(exception.getFieldError()).getDefaultMessage());
     }
 }

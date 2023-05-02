@@ -59,7 +59,8 @@ public class RequestServiceImpl implements RequestService {
     @Override
     public List<RequestDto> getAllRequestList(long userId, Pageable pageable) {
         userService.getUserIfExistOrThrow(userId);
-        List<RequestDto> requests = requestRepository.findAllWhereOwnerNotCurrentUserByPageable(userId, pageable).stream()
+        List<RequestDto> requests = requestRepository.findAllWhereOwnerNotCurrentUserByPageable(userId, pageable)
+                .stream()
                 .map(RequestMapper::toDto)
                 .collect(Collectors.toList());
         List<ItemDto> itemList = itemRepository.findAllByRequestIds(requests.stream()
